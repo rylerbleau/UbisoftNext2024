@@ -22,32 +22,29 @@ MATH::Vec2 PlayerController::GetLeftStick(int id = 0)
 {
 	MATH::Vec2 dir;
 
-	switch (App::GetController(id).IsConnected()) {
-	case true:
-		// controller input
+	
+	// kbm input
+	if (App::IsKeyPressed('W')) {
+		dir.y = 1.0f;
+	}
+	if (App::IsKeyPressed('S')) {
+		dir.y = -1.0f;
+	}
+	if (App::IsKeyPressed('D')) {
+		dir.x = 1.0f;
+	}
+	if (App::IsKeyPressed('A')) {
+		dir.x = -1.0f;
+	}
+	
+	
+	if (MATH::Vec2::mag(dir) == 0.0f) {
 		dir.x = App::GetController().GetLeftThumbStickX();
 		dir.y = App::GetController().GetLeftThumbStickY();
 
-		break;
-	case false:
-		// kbm input
-		if (App::IsKeyPressed('W')) {
-			dir.y = 1.0f;
-		}
-		if (App::IsKeyPressed('S')) {
-			dir.y = -1.0f;
-		}
-		if (App::IsKeyPressed('D')) {
-			dir.x = 1.0f;
-		}
-		if (App::IsKeyPressed('A')) {
-			dir.x = -1.0f;
-		}
-
-		break;
-	default:
-		break;
 	}
+
+
 
 	return MATH::Vec2::normalize(dir);
 }
