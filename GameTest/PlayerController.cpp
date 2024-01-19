@@ -52,6 +52,11 @@ MATH::Vec2 PlayerController::GetLeftStick(int id = 0)
 	return MATH::Vec2::normalize(dir);
 }
 
+Command* PlayerController::HandleButtons(int id)
+{
+	return nullptr;
+}
+
 int PlayerController::GetAnimState(MATH::Vec2 dir)
 {
 	if (MATH::Vec2::mag(dir) <= VERY_SMALL) {

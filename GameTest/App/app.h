@@ -10,6 +10,7 @@
 #include "AppSettings.h"
 #include "SimpleController.h"
 #include "SimpleSprite.h"
+#include "../2DMath.h"
 
 
 
@@ -31,9 +32,9 @@ namespace App
 	//-------------------------------------------------------------------------------------------
 	void DrawLine( float sx, float sy, float ex, float ey, float r = 1.0f, float g = 1.0f, float b = 1.0f );
 	
+	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b);
 
 
-	void DrawCircle();
 
 	//-------------------------------------------------------------------------------------------
 	// void Print(float x, float y, const char *text, float r = 1.0f, float g = 1.0f, float b = 1.0f, void *font = GLUT_BITMAP_HELVETICA_18);

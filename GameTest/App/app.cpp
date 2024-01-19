@@ -26,12 +26,40 @@ namespace App
 		glColor3f(r, g, b); // Yellow
 		glVertex2f(sx, sy);
 		glVertex2f(ex, ey);
+
 		glEnd();
 	}
+
+	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b)
+	{
+		float angleIncrement = 2.0f * PI / numOfLines;
+
+#if APP_USE_VIRTUAL_RES		
+		APP_VIRTUAL_TO_NATIVE_COORDS(centre.x, centre.y);
+		
+
+#endif
 	
-	void DrawCircle() {
+
+	for (int i = 0; i < numOfLines; ++i) {
+		glBegin(GL_LINES);
+		glColor3f(r, g, b);
+		float angleStart = i * angleIncrement;
+		float angleEnd = (i + 1) * angleIncrement;
+
+		float startX = centre.x + radius * std::cos(angleStart);
+		float startY = centre.y + radius * std::sin(angleStart);
+
+		float endX = centre.x + radius * std::cos(angleEnd);
+		float endY = centre.y + radius * std::sin(angleEnd);
+
+		glVertex2f(startX, startY);
+		glVertex2f(endX, endY);
+		glEnd();
+	}
 
 	}
+	
 
 	
 	CSimpleSprite *CreateSprite(const char *fileName, int columns, int rows)
