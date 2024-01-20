@@ -8,7 +8,7 @@ class PhysicsComponent : public Component
 public:
 
     PhysicsComponent(Component* parent, MATH::Vec2 pos_, MATH::Vec2 vel_, float orientation_, float angVel_, float mass_);
-    virtual void Update(const float deltaTime_) {};
+    virtual void Update(const float deltaTime_);
     virtual void Render()const {};
     virtual bool OnCreate() { return true; };
     virtual void OnDestroy() {};

@@ -1,5 +1,5 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef MATH_H
+#define MATH_H
 
 #include <iostream>
 
@@ -174,4 +174,18 @@ namespace MATH{
 }
 
 
-#endif VECTOR_H
+using namespace MATH;
+
+namespace COLLISIONS {
+
+	inline static bool PointCircle() {
+
+	}
+
+
+}
+
+
+
+
+#endif MATH_H

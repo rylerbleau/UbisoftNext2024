@@ -1,4 +1,9 @@
-#pragma once
+#ifndef PHYSICS_H
+
+#define PHYSICS_H
+
+
+
 #include "2DMath.h"
 #include "PhysicsComponent.h"
 
@@ -9,11 +14,11 @@ namespace PHYSICS {
 
 	
 	// linear
-	void UpdatePosition(Ref<PhysicsComponent> body, float deltaTime) {
+	inline static void UpdatePosition(Ref<PhysicsComponent> body, float deltaTime) {
 		body->pos += body->vel * deltaTime;
 	};
 
-	void UpdateVelocity(Ref<PhysicsComponent> body, float deltaTime) {
+	inline static void UpdateVelocity(Ref<PhysicsComponent> body, float deltaTime) {
 		body->vel += body->accel * deltaTime;
 
 		// cap velocity
@@ -23,7 +28,7 @@ namespace PHYSICS {
 
 	};
 
-	void AddForce(Ref<PhysicsComponent> body, MATH::Vec2 force) {
+	inline static void AddForce(Ref<PhysicsComponent> body, MATH::Vec2 force) {
 
 		MATH::Vec2 frictionForce = body->vel * -0.001f;
 		MATH::Vec2 appliedforce = force / body->mass;
@@ -33,20 +38,20 @@ namespace PHYSICS {
 	};
 
 	// angular
-	void UpdateOrientation(Ref<PhysicsComponent> body, float deltaTime) {
+	inline static void UpdateOrientation(Ref<PhysicsComponent> body, float deltaTime) {
 		body->orientation += body->angVel * deltaTime + (body->angAccel * 0.5f * deltaTime * deltaTime);
 	};
 		
-	void UpdateAngVelocity(Ref<PhysicsComponent> body, float deltaTime) {
+	inline static void UpdateAngVelocity(Ref<PhysicsComponent> body, float deltaTime) {
 		body->angVel += body->angAccel * deltaTime;
 	};
 
-	void SetAngVelocity(Ref<PhysicsComponent> body, float angVel_) {
+	inline static void SetAngVelocity(Ref<PhysicsComponent> body, float angVel_) {
 		body->angVel = angVel_;
 
 	}
 
-	void SetOrientation(Ref<PhysicsComponent> body, float orientation) {
+	inline static void SetOrientation(Ref<PhysicsComponent> body, float orientation) {
 		body->orientation = orientation;
 	}
 	
@@ -62,3 +67,4 @@ namespace PHYSICS {
 
 
 }
+#endif PHYSICS_H

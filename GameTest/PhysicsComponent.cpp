@@ -15,3 +15,8 @@ PhysicsComponent::PhysicsComponent(Component* parent, MATH::Vec2 pos_, MATH::Vec
 	angAccel		= 0.0f;
 }
 
+void PhysicsComponent::Update(const float deltaTime_)
+{
+
+}
+
