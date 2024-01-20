@@ -23,6 +23,7 @@ void BulletPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_
 			bullet->Init(pos_, vel_, owner_, timeLeft_);
 			return;
 		}
+		// track oldest, just in case full
 		if (bullet->GetTimeLeft() < lowestTime) {
 			lowestTime = bullet->GetTimeLeft();
 			mostLikely = bullet;
@@ -53,7 +54,7 @@ void BulletPool::RenderBullets()
 {
 	for (Ref<Bullet> bullet : bullets) {
 		if (bullet->InUse()) {
-			bullet->GetComponent<LineComponent>()->Render();
+			bullet->GetComponent<CircleComponent>()->Render();
 		}
 	}
 }

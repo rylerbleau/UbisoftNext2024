@@ -13,6 +13,7 @@
 #include "SpriteComponent.h"
 #include "BulletPool.h"
 #include "LineComponent.h"
+#include "CircleComponent.h"
 #include "Actor.h"
 #include "Physics.h"
 
@@ -51,7 +52,7 @@ void Init()
 	Component* parent = dynamic_cast<Component*>(playerActor.get());
 	
 
-	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(400, 400), MATH::Vec2(), 0.0f, 0.0f, 1.0f);
+	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(400, 400), MATH::Vec2(), MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
 
 
 	std::vector<Line> lines;
@@ -61,15 +62,20 @@ void Init()
 	lines.push_back(Line{ MATH::Vec2(-50.0f, -50.0f), MATH::Vec2(50.0f, -50.0f) });
 
 	playerActor->AddComponent<LineComponent>(parent, lines, MATH::Vec2(0.0f, 0.0f));
-
 	
-	//actors.push_back(actor);
+
+	Ref<Actor> actor = std::make_shared<Actor>(nullptr);
+	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(0.0f, -0.5f), MATH::Vec2(),
+		0, 0, 1, true);
+
+	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 1.0f, 20.0f, 1,0,0);
+	
+	actors.push_back(actor);
 
 
 	for (Ref<Actor> a : actors) {
 		a->OnCreate();
-		a->GetComponent<PhysicsComponent>();
-
+		
 	}
 
 	playerActor->OnCreate();
@@ -82,45 +88,56 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-	
+	Ref<PhysicsComponent> body = playerActor->GetComponent<PhysicsComponent>();
 
-	// sound
+	
+	// handle input ---------------------------------------------------------------------//
+
+	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
+	{
+		pool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
+	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
 		App::PlaySound(".\\TestData\\Test.wav");
 	}
 
-	
-	
-
 	MATH::Vec2 move = playerController->GetLeftStick(0);
 	MATH::Vec2 aim = playerController->GetRightStick(0);
 
 
-	// updating player
-	Ref<PhysicsComponent> body = playerActor->GetComponent<PhysicsComponent>();
+	// updating player ------------------------------------------------------------------//
+	
 
 	if (aim.x != 0.0f && aim.y != 0.0f) {
 
 		PHYSICS::SetOrientation(body, atan2(aim.y, aim.x) * RADIANS_TO_DEGREES);
 	}
 
-	PHYSICS::UpdatePosition(body, deltaTime);
-	PHYSICS::UpdateVelocity(body, deltaTime);
+	/*PHYSICS::UpdatePosition(body, deltaTime);
+	PHYSICS::UpdateVelocity(body, deltaTime);*/
+	body->Update(deltaTime);
 	PHYSICS::AddForce(body, move / 1000.0f);
 
 	Ref<LineComponent> line = playerActor->GetComponent<LineComponent>();
 	line->UpdateLineComponent(body);
 
+	// update bullet pool ----------------------------------------------------------------//
+
 	pool.UpdatePool(deltaTime);
 
-	text = std::to_string(body->vel.x) +"  " + std::to_string(body->vel.y);
-	
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
-	{
-		pool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
+	// update all other actors ------------------------------------------------------------//
+
+	for (Ref<Actor> a : actors) {
+		a->GetComponent<PhysicsComponent>()->Update(deltaTime);
 	}
 
+
+	
+
+	// other -------------------------------------------------------------------------------//
+
+	text = std::to_string(body->vel.x) +"  " + std::to_string(body->vel.y);
 }
 
 //------------------------------------------------------------------------
@@ -136,8 +153,9 @@ void Render()
 	for (Ref<Actor> actor : actors)
 	{
 
-		Ref<LineComponent> line = actor->GetComponent<LineComponent>();
-		line->Render();
+		Ref<CircleComponent> c = actor->GetComponent<CircleComponent>();
+		c->Render();
+		c->UpdateCircleComponent(actor->GetComponent<PhysicsComponent>());
 		
 	}
 	pool.RenderBullets();

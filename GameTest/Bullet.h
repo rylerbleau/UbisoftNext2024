@@ -4,6 +4,7 @@
 #include "Interfaces.h"
 #include "2DMath.h"
 #include "PhysicsComponent.h"
+#include "CircleComponent.h"
 #include "LineComponent.h"
 #include "Physics.h"
 #include <vector>

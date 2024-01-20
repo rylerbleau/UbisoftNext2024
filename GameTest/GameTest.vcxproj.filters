@@ -22,13 +22,22 @@
       <Filter>stb_image</Filter>
     </ClCompile>
     <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="PhysicsComponent.cpp" />
-    <ClCompile Include="LineComponent.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="BulletPool.cpp" />
+    <ClCompile Include="CircleComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="LineComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicsComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -60,16 +69,29 @@
       <Filter>GameMath</Filter>
     </ClInclude>
     <ClInclude Include="PlayerController.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="Actor.h" />
-    <ClInclude Include="PhysicsComponent.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="LineComponent.h" />
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="BulletPool.h" />
+    <ClInclude Include="CircleComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="LineComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicsComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics.h">
+      <Filter>GameMath</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="NextAPI">
@@ -80,6 +102,9 @@
     </Filter>
     <Filter Include="GameMath">
       <UniqueIdentifier>{b0b9905b-35a3-4864-92d8-4b1f4f5d61a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{f68edb13-d2a0-4acf-bd95-96d537592ea5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -185,6 +185,7 @@
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletPool.h" />
+    <ClInclude Include="CircleComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="Interfaces.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="App\SimpleSprite.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletPool.cpp" />
+    <ClCompile Include="CircleComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="GameTest.cpp" />
     <ClCompile Include="LineComponent.cpp" />

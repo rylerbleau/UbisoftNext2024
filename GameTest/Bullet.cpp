@@ -17,8 +17,8 @@ void Bullet::Update(const float deltaTime)
 	if (timeLeft <= 0.0f) { Kill(); }
 
 	timeLeft -= deltaTime;
-	PHYSICS::UpdatePosition(GetComponent<PhysicsComponent>(), deltaTime);
-	GetComponent<LineComponent>()->UpdateLineComponent(GetComponent<PhysicsComponent>());
+	GetComponent<PhysicsComponent>()->Update(deltaTime);
+	GetComponent<CircleComponent>()->UpdateCircleComponent(GetComponent<PhysicsComponent>());
 
 
 
@@ -35,13 +35,11 @@ void Bullet::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float tim
 
 
 	
-	AddComponent<PhysicsComponent>(this, pos_, vel_, 0.0f, 0.0f, 1.0f);
+	AddComponent<PhysicsComponent>(this, pos_, vel_, MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
 
-	std::vector<Line> lines;
-	lines.push_back(Line{ MATH::Vec2(0.0f, 0.0f), MATH::Vec2(0.0f, 10.0f),0.0f, 1.0f, 0.0f });
-	AddComponent<LineComponent>(this, lines, MATH::Vec2(0.0f, 0.0f ));
+	AddComponent<CircleComponent>(this, MATH::Vec2(0, 0), 0.03f, 20.0f, 0, 1, 0);
 
-	GetComponent<LineComponent>()->UpdateLineComponent(GetComponent<PhysicsComponent>());
+	GetComponent<CircleComponent>()->UpdateCircleComponent(GetComponent<PhysicsComponent>());
 
 	
 }
