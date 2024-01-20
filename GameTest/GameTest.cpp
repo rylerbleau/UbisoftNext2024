@@ -86,14 +86,20 @@ void Init()
 void HandleCollisions() {
 	for (Ref<Actor> a : actors) {
 
-		MATH::Circle aCircle = a->GetComponent<CircleComponent>()->GetCircle();
+		Ref<CircleComponent> aCircle = a->GetComponent<CircleComponent>();
+		Ref<PhysicsComponent> aBody = a->GetComponent<PhysicsComponent>();
 
 		for (Ref<Bullet> b : pool.bullets) {
 			if (!b->InUse()) continue;
-			MATH::Circle bCircle = b->GetComponent<CircleComponent>()->GetCircle();
-			if (COLLISIONS::CircleCircle(aCircle, bCircle)) {
-				std::cout << "collision!" << std::endl;
-			}
+			Ref<CircleComponent> bCircle = b->GetComponent<CircleComponent>();
+			Ref<PhysicsComponent> bBody = b->GetComponent<PhysicsComponent>();
+
+			COLLISIONS::CircleCircleCollision(aCircle, bCircle, aBody, bBody);
+
+
+				
+
+			
 		}
 	}
 

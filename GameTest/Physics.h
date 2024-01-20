@@ -6,6 +6,7 @@
 
 #include "2DMath.h"
 #include "PhysicsComponent.h"
+#include "CircleComponent.h"
 
 
 using namespace MATH;
@@ -55,16 +56,47 @@ namespace PHYSICS {
 		body->orientation = orientation;
 	}
 	
-
-
-
-
-
-
-
-
+	
 
 
 
 }
+
+
+
+namespace COLLISIONS {
+
+	
+
+	inline static void CircleCircleCollision(Ref<CircleComponent> circle1, Ref<CircleComponent> circle2,
+		Ref<PhysicsComponent> body1, Ref<PhysicsComponent> body2) {
+		Circle c1 = circle1->GetCircle();
+		Circle c2 = circle2->GetCircle();
+		float d = Vec2::distance(c1.centre, c2.centre);
+		if (d <= c1.r + c2.r) {
+			// collision response
+
+			
+			Vec2 normal = (c1.centre - c2.centre) / d;
+			float p = 2.0f * (Vec2::dot(body1->vel, normal) - Vec2::dot(body2->vel, normal)) / (body1->mass + body2->mass);
+
+			body1->vel = body1->vel - (normal * p * body1->mass);
+			body2->vel = body2->vel + (normal * p * body2->mass);
+		}
+
+
+	}
+
+
+}
+
+//double d = Math.sqrt(Math.pow(cx1 - cx2, 2) + Math.pow(cy1 - cy2, 2));
+//double nx = (cx2 - cx1) / d;
+//double ny = (cy2 - cy1) / d;
+//double p = 2 * (circle1.vx * nx + circle1.vy * n_y - circle2.vx * nx - circle2.vy * n_y) /
+//(circle1.mass + circle2.mass);
+//vx1 = circle1.vx - p * circle1.mass * n_x;
+//vy1 = circle1.vy - p * circle1.mass * n_y;
+//vx2 = circle2.vx + p * circle2.mass * n_x;
+//vy2 = circle2.vy + p * circle2.mass * n_y;
 #endif PHYSICS_H

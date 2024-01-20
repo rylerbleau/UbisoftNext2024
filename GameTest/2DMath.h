@@ -4,6 +4,7 @@
 #include <iostream>
 
 
+
 namespace MATH{
 
 
@@ -180,29 +181,7 @@ namespace MATH{
 }
 
 
-using namespace MATH;
 
-namespace COLLISIONS {
-
-	inline static bool CircleCircle(const Vec2& c1, float r1, const Vec2& c2, float r2) {
-		if (Vec2::distance(c1, c2) <= r1 + r2) {
-			return true;
-		}
-		return false;
-	}
-
-	inline static bool CircleCircle(const Circle& circle1, const Circle& circle2) {
-		float d = Vec2::distance(circle1.centre, circle2.centre);
-		
-		float r = circle1.r + circle2.r;
-		if (d<=r) {
-			return true;
-		}
-		return false;
-	}
-
-
-}
 
 
 
