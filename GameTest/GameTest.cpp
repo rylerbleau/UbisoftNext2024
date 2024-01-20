@@ -28,7 +28,7 @@
 
 std::vector<Ref<Actor>> actors;
 Ref<Actor> playerActor;
-BulletPool pool;
+BulletPool* pool;
 
 
 
@@ -66,7 +66,7 @@ void Init()
 	
 
 	Ref<Actor> actor = std::make_shared<Actor>(nullptr);
-	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.001f),
+	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f),
 		0, 0, 10, true);
 
 	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 100.0f, 20.0f, 1,0,0);
@@ -89,13 +89,18 @@ void HandleCollisions() {
 		Ref<CircleComponent> aCircle = a->GetComponent<CircleComponent>();
 		Ref<PhysicsComponent> aBody = a->GetComponent<PhysicsComponent>();
 
-		for (Ref<Bullet> b : pool.bullets) {
+		for (Ref<Bullet> b : pool->bullets) {
 			if (!b->InUse()) continue;
 			Ref<CircleComponent> bCircle = b->GetComponent<CircleComponent>();
 			Ref<PhysicsComponent> bBody = b->GetComponent<PhysicsComponent>();
 
 			COLLISIONS::CircleCircleCollision(aCircle, bCircle, aBody, bBody);
 			
+		}
+
+		if (COLLISIONS::BoundingBoxCircleCollision(aCircle, aBody, 0.0f, APP_VIRTUAL_WIDTH, 0.0f, APP_VIRTUAL_HEIGHT)) {
+			// ball hit the floor *DEAD*
+			continue;
 		}
 	}
 
@@ -118,7 +123,7 @@ void Update(float deltaTime)
 
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, true))
 	{
-		pool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
+		pool->Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
@@ -147,7 +152,7 @@ void Update(float deltaTime)
 
 	// update bullet pool ----------------------------------------------------------------//
 
-	pool.UpdatePool(deltaTime);
+	pool->UpdatePool(deltaTime);
 
 	// update all other actors ------------------------------------------------------------//
 
@@ -180,7 +185,7 @@ void Render()
 		c->UpdateCircleComponent(actor->GetComponent<PhysicsComponent>());
 		
 	}
-	pool.RenderBullets();
+	pool->RenderBullets();
 
 	playerActor->GetComponent<LineComponent>()->Render();
 
