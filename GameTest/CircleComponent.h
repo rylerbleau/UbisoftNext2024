@@ -16,15 +16,18 @@ public:
     virtual void OnDestroy() {};
 
     void UpdateCircleComponent(Ref<PhysicsComponent> body);
+    MATH::Circle GetCircle() { return MATH::Circle{ radius, centre }; };
 
 private:
     float radius;
     MATH::Vec2 centre;
 
+
+
     float numOfLines;
     float r, g, b;
 
-    MATH::Vec2 pos;
+
 
 };
 

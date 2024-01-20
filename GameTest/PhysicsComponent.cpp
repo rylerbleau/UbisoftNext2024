@@ -10,13 +10,14 @@ PhysicsComponent::PhysicsComponent(Component* parent, MATH::Vec2 pos_, MATH::Vec
 {
 	pos				= pos_;
 	vel				= vel_;
-	accel			= MATH::Vec2();
+	accel			= accel_;
 	maxVel			= 0.4f;
 
 	orientation		= orientation_;
 	angVel			= angVel_;
 	mass			= mass_;
 	angAccel		= 0.0f;
+
 	physicsEnabled  = physicsEnabled_;
 }
 

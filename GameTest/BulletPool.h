@@ -2,9 +2,14 @@
 #include "Actor.h"
 #include "Bullet.h"
 #include "array"
+#include <vector>
 
 class BulletPool
 {
+
+private:
+	static const int maxSize = 8;
+
 public:
 	BulletPool();
 	~BulletPool() {};
@@ -13,9 +18,9 @@ public:
 	void UpdatePool(float deltaTime);
 	void Kill(const int i);
 	void RenderBullets();
+	std::array<Ref<Bullet>, maxSize>& GetBulletsAsArray() { return bullets; }
 
-private:
-	static const int maxSize = 8;
+	int GetMaxSize() { return maxSize; }
 	std::array<Ref<Bullet>, maxSize> bullets;
 };
 

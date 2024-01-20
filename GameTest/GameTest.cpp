@@ -16,6 +16,7 @@
 #include "CircleComponent.h"
 #include "Actor.h"
 #include "Physics.h"
+#include <vector>
 
 //------------------------------------------------------------------------
 
@@ -65,10 +66,10 @@ void Init()
 	
 
 	Ref<Actor> actor = std::make_shared<Actor>(nullptr);
-	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(0.0f, -0.5f), MATH::Vec2(),
+	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0001f),
 		0, 0, 1, true);
 
-	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 1.0f, 20.0f, 1,0,0);
+	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 100.0f, 20.0f, 1,0,0);
 	
 	actors.push_back(actor);
 
@@ -82,12 +83,32 @@ void Init()
 	
 }
 
+void HandleCollisions() {
+	for (Ref<Actor> a : actors) {
+
+		MATH::Circle aCircle = a->GetComponent<CircleComponent>()->GetCircle();
+
+		for (Ref<Bullet> b : pool.bullets) {
+			if (!b->InUse()) continue;
+			MATH::Circle bCircle = b->GetComponent<CircleComponent>()->GetCircle();
+			if (COLLISIONS::CircleCircle(aCircle, bCircle)) {
+				std::cout << "collision!" << std::endl;
+			}
+		}
+	}
+
+
+}
+
 //------------------------------------------------------------------------
 // Update your simulation here. deltaTime is the elapsed time since the last update in ms.
 // This will be called at no greater frequency than the value of APP_MAX_FRAME_RATE
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
+
+	
+
 	Ref<PhysicsComponent> body = playerActor->GetComponent<PhysicsComponent>();
 
 	
@@ -133,7 +154,6 @@ void Update(float deltaTime)
 	}
 
 
-	
 
 	// other -------------------------------------------------------------------------------//
 
@@ -162,11 +182,13 @@ void Render()
 
 	playerActor->GetComponent<LineComponent>()->Render();
 
-	App::DrawCircle(MATH::Vec2(400.0f, 400.0f), 0.5f, 20.0f, 1.0f, 0.0f, 0.0f);
+
+	App::DrawLine(400, 860, 400, 400, 0, 1, 0);
 
 
 	App::Print(100, 100, text.c_str());
 
+	HandleCollisions();
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.

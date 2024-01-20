@@ -37,7 +37,7 @@ void Bullet::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float tim
 	
 	AddComponent<PhysicsComponent>(this, pos_, vel_, MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
 
-	AddComponent<CircleComponent>(this, MATH::Vec2(0, 0), 0.03f, 20.0f, 0, 1, 0);
+	AddComponent<CircleComponent>(this, MATH::Vec2(0, 0), 30.0f, 20.0f, 0, 1, 0);
 
 	GetComponent<CircleComponent>()->UpdateCircleComponent(GetComponent<PhysicsComponent>());
 

@@ -11,17 +11,17 @@ CircleComponent::CircleComponent(Component* parent, MATH::Vec2 centre_, float ra
 	g				= g_;
 	b				= b_;
 
-	pos				= MATH::Vec2();
+
 
 }
 
 void CircleComponent::Render() const
 {
-	MATH::Vec2 tempCentre = centre + pos;
-	App::DrawCircle(tempCentre, radius, numOfLines, r, g, b);
+	
+	App::DrawCircle(centre, radius, numOfLines, r, g, b);
 }
 
 void CircleComponent::UpdateCircleComponent(Ref<PhysicsComponent> body)
 {
-	pos = body->pos;
+	centre = body->pos;
 }

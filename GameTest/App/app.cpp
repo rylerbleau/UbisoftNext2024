@@ -33,16 +33,18 @@ namespace App
 	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b)
 	{
 		float angleIncrement = 2.0f * PI / numOfLines;
+		
 
 #if APP_USE_VIRTUAL_RES		
 		APP_VIRTUAL_TO_NATIVE_COORDS(centre.x, centre.y);
+		radius =   2.0f * radius / APP_VIRTUAL_HEIGHT;
 		
 
 #endif
 	
 
 	for (int i = 0; i < numOfLines; ++i) {
-		glBegin(GL_LINES);
+		glBegin(GL_TRIANGLES);
 		glColor3f(r, g, b);
 		float angleStart = i * angleIncrement;
 		float angleEnd = (i + 1) * angleIncrement;
@@ -55,6 +57,7 @@ namespace App
 
 		glVertex2f(startX, startY);
 		glVertex2f(endX, endY);
+		glVertex2f(centre.x, centre.y);
 		glEnd();
 	}
 
