@@ -4,7 +4,7 @@
 
 
 
-ObjectPool::ObjectPool()
+ObjectPool::ObjectPool() : currentSize(0)
 {
 	for (int i = 0; i < maxSize; i++) {
 		objects[i] = std::make_shared<PoolObject>(nullptr, 0.0f);
@@ -17,6 +17,7 @@ void ObjectPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, 
 {
 	Ref<PoolObject> mostLikely = nullptr;;
 	float lowestTime = FLT_MAX;
+	timeLeft_ *= 1000.0f;
 
 
 	for (Ref<PoolObject> ob : objects) {
@@ -51,11 +52,11 @@ void ObjectPool::Kill(const int i)
 	objects[i]->Kill();
 }
 
-void ObjectPool::RenderBullets()
+void ObjectPool::RenderObjects()
 {
-	for (Ref<PoolObject> bullet : objects) {
-		if (bullet->InUse()) {
-			bullet->GetComponent<CircleComponent>()->Render();
+	for (Ref<PoolObject> ob : objects) {
+		if (ob->InUse()) {
+			ob->GetComponent<CircleComponent>()->Render();
 		}
 	}
 }

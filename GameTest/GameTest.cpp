@@ -17,6 +17,7 @@
 #include "Actor.h"
 #include "Physics.h"
 #include <vector>
+#include "Timer.h"
 
 //------------------------------------------------------------------------
 
@@ -26,13 +27,14 @@
 
 
 
-std::vector<Ref<Actor>> actors;
+//std::vector<Ref<Actor>> actors;
 Ref<Actor> playerActor;
 ObjectPool bulletPool;
 ObjectPool actorPool;
+Timer* timer;
+float interval;
 
-
-
+std::string text;
 PlayerController* playerController;
 
 enum
@@ -65,29 +67,19 @@ void Init()
 
 	playerActor->AddComponent<LineComponent>(parent, lines, MATH::Vec2(0.0f, 0.0f));
 	
+	actorPool.Instantiate(MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f), nullptr, 2.0f, 100.0f, 1, 1, 0, 0);
 
-	Ref<Actor> actor = std::make_shared<Actor>(nullptr);
-	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f),
-		0, 0, 1, true);
-
-	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 100.0f, 20.0f, 1,0,0, true);
+	timer = new Timer;
+	timer->Start();
 	
-	actors.push_back(actor);
-	//actorPool.Instantiate(MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f), nullptr, 10.0f, 100.0f, 1, 1, 0, 0);
-
-
-	for (Ref<Actor> a : actors) {
-		a->OnCreate();
-		
-	}
 
 	playerActor->OnCreate();
 	
 }
 
 void HandleCollisions() {
-	for (Ref<Actor> a : actors) {
-		//if (!a->InUse()) continue;
+	for (Ref<PoolObject> a : actorPool.objects) {
+		if (!a->InUse()) continue;
 		Ref<CircleComponent> aCircle = a->GetComponent<CircleComponent>();
 		Ref<PhysicsComponent> aBody = a->GetComponent<PhysicsComponent>();
 
@@ -112,7 +104,11 @@ void HandleCollisions() {
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-
+	float t = timer->GetTimeInterval();
+	if (t >= 3.0f) {
+		timer->ResetTimeInterval();
+	}
+	
 	
 
 	Ref<PhysicsComponent> body = playerActor->GetComponent<PhysicsComponent>();
@@ -123,7 +119,7 @@ void Update(float deltaTime)
 
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, true))
 	{
-		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2000.0f, 20.0f, 1.0f, 0,1,0);
+		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0);
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
@@ -148,13 +144,12 @@ void Update(float deltaTime)
 	// update bullet pool ----------------------------------------------------------------//
 
 	bulletPool.UpdatePool(deltaTime);
+	actorPool.UpdatePool(deltaTime);
 
 	// update all other actors ------------------------------------------------------------//
 
-	for (Ref<Actor> a : actors) {
-		a->GetComponent<PhysicsComponent>()->Update(deltaTime);
-	}
-
+	
+	text = std::to_string(t);
 
 
 }
@@ -169,15 +164,9 @@ void Render()
 	// CURRENT WORK: bullets, object pooling / interfaces
 	// 
 
-	for (Ref<Actor> actor : actors)
-	{
-
-		Ref<CircleComponent> c = actor->GetComponent<CircleComponent>();
-		c->Render();
-		c->UpdateCircleComponent(actor->GetComponent<PhysicsComponent>());
-		
-	}
-	bulletPool.RenderBullets();
+	
+	bulletPool.RenderObjects();
+	actorPool.RenderObjects();
 
 	playerActor->GetComponent<LineComponent>()->Render();
 
@@ -185,7 +174,7 @@ void Render()
 	App::DrawLine(400, 860, 400, 400, 0, 1, 0);
 
 
-	//App::Print(100, 100, text.c_str());
+	App::Print(100, 100, text.c_str());
 
 	HandleCollisions();
 }
@@ -198,5 +187,6 @@ void Shutdown()
 	
 	
 	delete playerController;
+	delete timer;
 	//------------------------------------------------------------------------
 }

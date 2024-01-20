@@ -9,6 +9,8 @@ class ObjectPool
 
 private:
 	static const int maxSize = 8;
+	int currentSize;
+
 
 public:
 	ObjectPool();
@@ -18,9 +20,9 @@ public:
 	float r_, float g_, float b_);
 	void UpdatePool(float deltaTime);
 	void Kill(const int i);
-	void RenderBullets();
+	void RenderObjects();
 
-	int GetMaxSize() { return maxSize; }
+	int GetCurrentSize() { return currentSize; }
 	std::array<Ref<PoolObject>, maxSize> objects;
 };
 
