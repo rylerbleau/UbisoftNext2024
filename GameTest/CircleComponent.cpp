@@ -11,6 +11,7 @@ CircleComponent::CircleComponent(Component* parent, MATH::Vec2 centre_, float ra
 	g				= g_;
 	b				= b_;
 
+	collidable = true;
 
 
 }

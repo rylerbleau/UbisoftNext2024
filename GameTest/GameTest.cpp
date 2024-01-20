@@ -66,8 +66,8 @@ void Init()
 	
 
 	Ref<Actor> actor = std::make_shared<Actor>(nullptr);
-	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0001f),
-		0, 0, 1, true);
+	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.001f),
+		0, 0, 10, true);
 
 	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 100.0f, 20.0f, 1,0,0);
 	
@@ -95,10 +95,6 @@ void HandleCollisions() {
 			Ref<PhysicsComponent> bBody = b->GetComponent<PhysicsComponent>();
 
 			COLLISIONS::CircleCircleCollision(aCircle, bCircle, aBody, bBody);
-
-
-				
-
 			
 		}
 	}
@@ -120,7 +116,7 @@ void Update(float deltaTime)
 	
 	// handle input ---------------------------------------------------------------------//
 
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
+	if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, true))
 	{
 		pool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
 	}

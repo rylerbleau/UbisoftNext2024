@@ -55,10 +55,6 @@ namespace PHYSICS {
 	inline static void SetOrientation(Ref<PhysicsComponent> body, float orientation) {
 		body->orientation = orientation;
 	}
-	
-	
-
-
 
 }
 
@@ -66,14 +62,13 @@ namespace PHYSICS {
 
 namespace COLLISIONS {
 
-	
 
 	inline static void CircleCircleCollision(Ref<CircleComponent> circle1, Ref<CircleComponent> circle2,
 		Ref<PhysicsComponent> body1, Ref<PhysicsComponent> body2) {
 		Circle c1 = circle1->GetCircle();
 		Circle c2 = circle2->GetCircle();
 		float d = Vec2::distance(c1.centre, c2.centre);
-		if (d <= c1.r + c2.r) {
+		if (d <= c1.r + c2.r && circle2->GetCollidable()) {
 			// collision response
 
 			
@@ -82,6 +77,9 @@ namespace COLLISIONS {
 
 			body1->vel = body1->vel - (normal * p * body1->mass);
 			body2->vel = body2->vel + (normal * p * body2->mass);
+
+			circle2->SetCollidable(false);
+			body2->accel = Vec2(0.0f, -0.1f);
 		}
 
 
@@ -90,13 +88,4 @@ namespace COLLISIONS {
 
 }
 
-//double d = Math.sqrt(Math.pow(cx1 - cx2, 2) + Math.pow(cy1 - cy2, 2));
-//double nx = (cx2 - cx1) / d;
-//double ny = (cy2 - cy1) / d;
-//double p = 2 * (circle1.vx * nx + circle1.vy * n_y - circle2.vx * nx - circle2.vy * n_y) /
-//(circle1.mass + circle2.mass);
-//vx1 = circle1.vx - p * circle1.mass * n_x;
-//vy1 = circle1.vy - p * circle1.mass * n_y;
-//vx2 = circle2.vx + p * circle2.mass * n_x;
-//vy2 = circle2.vy + p * circle2.mass * n_y;
 #endif PHYSICS_H

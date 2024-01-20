@@ -18,10 +18,14 @@ public:
     void UpdateCircleComponent(Ref<PhysicsComponent> body);
     MATH::Circle GetCircle() { return MATH::Circle{ radius, centre }; };
 
+    bool GetCollidable() { return collidable; }
+    void SetCollidable(bool c) { collidable = c; }
+
 private:
     float radius;
     MATH::Vec2 centre;
 
+    bool collidable;
 
 
     float numOfLines;
