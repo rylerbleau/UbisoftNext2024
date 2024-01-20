@@ -1,13 +1,10 @@
 #pragma once
 
 
-class IProjectile {
+class IPoolable {
 public:
-	virtual void Update(float deltaTime) const = 0;
-
-
-protected:
-	Ref<Actor> owner;
-	float timeLeft;
+	virtual void UpdateObject(float deltaTime) const = 0;
+	virtual bool InUse() const = 0;
+	virtual void Kill() = 0;
 
 };
