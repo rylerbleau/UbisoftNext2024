@@ -33,8 +33,8 @@ ObjectPool actorPool;
 
 
 
-std::string text;
 PlayerController* playerController;
+
 enum
 {
 	ANIM_FORWARDS,
@@ -68,11 +68,12 @@ void Init()
 
 	Ref<Actor> actor = std::make_shared<Actor>(nullptr);
 	actor->AddComponent<PhysicsComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f),
-		0, 0, 10, true);
+		0, 0, 1, true);
 
-	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 100.0f, 20.0f, 1,0,0);
+	actor->AddComponent<CircleComponent>(dynamic_cast<Component*>(actor.get()), MATH::Vec2(0, 0), 100.0f, 20.0f, 1,0,0, true);
 	
 	actors.push_back(actor);
+	//actorPool.Instantiate(MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f), nullptr, 10.0f, 100.0f, 1, 1, 0, 0);
 
 
 	for (Ref<Actor> a : actors) {
@@ -86,7 +87,7 @@ void Init()
 
 void HandleCollisions() {
 	for (Ref<Actor> a : actors) {
-
+		//if (!a->InUse()) continue;
 		Ref<CircleComponent> aCircle = a->GetComponent<CircleComponent>();
 		Ref<PhysicsComponent> aBody = a->GetComponent<PhysicsComponent>();
 
@@ -94,11 +95,8 @@ void HandleCollisions() {
 			if (!b->InUse()) continue;
 			Ref<CircleComponent> bCircle = b->GetComponent<CircleComponent>();
 			Ref<PhysicsComponent> bBody = b->GetComponent<PhysicsComponent>();
-
 			COLLISIONS::CircleCircleCollision(aCircle, bCircle, aBody, bBody);
-			
 		}
-
 		if (COLLISIONS::BoundingBoxCircleCollision(aCircle, aBody, 0.0f, APP_VIRTUAL_WIDTH, 0.0f, APP_VIRTUAL_HEIGHT)) {
 			// ball hit the floor *DEAD*
 			continue;
@@ -118,13 +116,14 @@ void Update(float deltaTime)
 	
 
 	Ref<PhysicsComponent> body = playerActor->GetComponent<PhysicsComponent>();
+	Ref<LineComponent> line = playerActor->GetComponent<LineComponent>();
 
 	
 	// handle input ---------------------------------------------------------------------//
 
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, true))
 	{
-		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
+		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2000.0f, 20.0f, 1.0f, 0,1,0);
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
@@ -142,13 +141,8 @@ void Update(float deltaTime)
 
 		PHYSICS::SetOrientation(body, atan2(aim.y, aim.x) * RADIANS_TO_DEGREES);
 	}
-
-	/*PHYSICS::UpdatePosition(body, deltaTime);
-	PHYSICS::UpdateVelocity(body, deltaTime);*/
 	body->Update(deltaTime);
 	PHYSICS::AddForce(body, move / 1000.0f);
-
-	Ref<LineComponent> line = playerActor->GetComponent<LineComponent>();
 	line->UpdateLineComponent(body);
 
 	// update bullet pool ----------------------------------------------------------------//
@@ -163,9 +157,6 @@ void Update(float deltaTime)
 
 
 
-	// other -------------------------------------------------------------------------------//
-
-	text = std::to_string(body->vel.x) +"  " + std::to_string(body->vel.y);
 }
 
 //------------------------------------------------------------------------
@@ -194,7 +185,7 @@ void Render()
 	App::DrawLine(400, 860, 400, 400, 0, 1, 0);
 
 
-	App::Print(100, 100, text.c_str());
+	//App::Print(100, 100, text.c_str());
 
 	HandleCollisions();
 }

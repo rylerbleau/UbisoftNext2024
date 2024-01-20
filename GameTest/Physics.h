@@ -73,7 +73,7 @@ namespace COLLISIONS {
 
 			
 			Vec2 normal = (c1.centre - c2.centre) / d;
-			float p = 2.0f * (Vec2::dot(body1->vel, normal) - Vec2::dot(body2->vel, normal)) / (body1->mass + body2->mass);
+			float p = 2.0f * (Vec2::dot(body1->vel, normal) - Vec2::dot(body2->vel, normal)) /  (body1->mass + body2->mass);
 
 			body1->vel = body1->vel - (normal * p * body1->mass);
 			body2->vel = body2->vel + (normal * p * body2->mass);

@@ -24,7 +24,8 @@ void PoolObject::Update(const float deltaTime)
 
 }
 
-void PoolObject::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float timeLeft_)
+void PoolObject::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_,
+	float r_, float g_, float b_)
 {
 	owner		= owner_;
 	timeLeft	= timeLeft_;
@@ -35,9 +36,9 @@ void PoolObject::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float
 
 
 	
-	AddComponent<PhysicsComponent>(this, pos_, vel_, MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
+	AddComponent<PhysicsComponent>(this, pos_, vel_, acc_, 0.0f, 0.0f, m_, true);
 
-	AddComponent<CircleComponent>(this, MATH::Vec2(0, 0), 20.0f, 20.0f, 0, 1, 0);
+	AddComponent<CircleComponent>(this, MATH::Vec2(0, 0), rad_, 20.0f, r_, g_, b_, true);
 
 	GetComponent<CircleComponent>()->UpdateCircleComponent(GetComponent<PhysicsComponent>());
 

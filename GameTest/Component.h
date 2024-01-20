@@ -5,7 +5,6 @@
 #include <iostream>
 
 // Ref is defined as making a ref to a shared ptr
-// Thanks Scott!!
 template<typename T>
 using Ref = std::shared_ptr<T>;
 
@@ -22,6 +21,7 @@ public:
 	virtual void Update(const float deltaTime_) = 0;
 	virtual void Render()const = 0;
 
+	void ReParent(Component* parent_) { parent = parent_; }
 protected:
 	Component* parent;
 	

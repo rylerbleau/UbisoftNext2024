@@ -9,7 +9,7 @@
 class CircleComponent : public Component
 {
 public:
-    CircleComponent(Component* parent, MATH::Vec2 centre_, float radius_, float numOfLines_, float r_, float g_, float b_);
+    CircleComponent(Component* parent, MATH::Vec2 centre_, float radius_, float numOfLines_, float r_, float g_, float b_, bool render_);
     virtual void Update(const float deltaTime_) {};
     virtual void Render()const;
     virtual bool OnCreate() { return true; };
@@ -27,7 +27,7 @@ private:
 
     bool collidable;
 
-
+    bool render;
     float numOfLines;
     float r, g, b;
 
