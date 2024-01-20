@@ -183,8 +183,8 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="BulletPool.h" />
+    <ClInclude Include="PoolObject.h" />
+    <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="CircleComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
@@ -206,8 +206,8 @@
     <ClCompile Include="App\SimpleController.cpp" />
     <ClCompile Include="App\SimpleSound.cpp" />
     <ClCompile Include="App\SimpleSprite.cpp" />
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="BulletPool.cpp" />
+    <ClCompile Include="PoolObject.cpp" />
+    <ClCompile Include="ObjectPool.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="GameTest.cpp" />

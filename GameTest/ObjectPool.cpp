@@ -1,24 +1,24 @@
 #include "stdafx.h"
-#include "BulletPool.h"
+#include "ObjectPool.h"
 #include <iterator>
 
 
 
-BulletPool::BulletPool()
+ObjectPool::ObjectPool()
 {
 	for (int i = 0; i < maxSize; i++) {
-		bullets[i] = std::make_shared<Bullet>(nullptr, 0.0f);
+		objects[i] = std::make_shared<PoolObject>(nullptr, 0.0f);
 	}
 
 }
 
-void BulletPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float timeLeft_)
+void ObjectPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float timeLeft_)
 {
-	Ref<Bullet> mostLikely = nullptr;;
+	Ref<PoolObject> mostLikely = nullptr;;
 	float lowestTime = FLT_MAX;
 
 
-	for (Ref<Bullet> bullet : bullets) {
+	for (Ref<PoolObject> bullet : objects) {
 		if (!bullet->InUse()) {
 			bullet->Init(pos_, vel_, owner_, timeLeft_);
 			return;
@@ -34,9 +34,9 @@ void BulletPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_
 	mostLikely->Init(pos_, vel_, owner_, timeLeft_);
 }
 
-void BulletPool::UpdatePool(float deltaTime)
+void ObjectPool::UpdatePool(float deltaTime)
 {
-	for (Ref<Bullet> bullet : bullets) {
+	for (Ref<PoolObject> bullet : objects) {
 		if (bullet->InUse()) {
 			bullet->Update(deltaTime);
 
@@ -45,14 +45,14 @@ void BulletPool::UpdatePool(float deltaTime)
 
 }
 
-void BulletPool::Kill(const int i)
+void ObjectPool::Kill(const int i)
 {
-	bullets[i]->Kill();
+	objects[i]->Kill();
 }
 
-void BulletPool::RenderBullets()
+void ObjectPool::RenderBullets()
 {
-	for (Ref<Bullet> bullet : bullets) {
+	for (Ref<PoolObject> bullet : objects) {
 		if (bullet->InUse()) {
 			bullet->GetComponent<CircleComponent>()->Render();
 		}

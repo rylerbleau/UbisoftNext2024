@@ -11,7 +11,7 @@
 #include "PlayerController.h"
 #include <string>
 #include "SpriteComponent.h"
-#include "BulletPool.h"
+#include "ObjectPool.h"
 #include "LineComponent.h"
 #include "CircleComponent.h"
 #include "Actor.h"
@@ -28,7 +28,8 @@
 
 std::vector<Ref<Actor>> actors;
 Ref<Actor> playerActor;
-BulletPool* pool;
+ObjectPool bulletPool;
+ObjectPool actorPool;
 
 
 
@@ -89,7 +90,7 @@ void HandleCollisions() {
 		Ref<CircleComponent> aCircle = a->GetComponent<CircleComponent>();
 		Ref<PhysicsComponent> aBody = a->GetComponent<PhysicsComponent>();
 
-		for (Ref<Bullet> b : pool->bullets) {
+		for (Ref<PoolObject> b : bulletPool.objects) {
 			if (!b->InUse()) continue;
 			Ref<CircleComponent> bCircle = b->GetComponent<CircleComponent>();
 			Ref<PhysicsComponent> bBody = b->GetComponent<PhysicsComponent>();
@@ -123,7 +124,7 @@ void Update(float deltaTime)
 
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, true))
 	{
-		pool->Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
+		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), playerActor, 2000.0f);
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
@@ -152,7 +153,7 @@ void Update(float deltaTime)
 
 	// update bullet pool ----------------------------------------------------------------//
 
-	pool->UpdatePool(deltaTime);
+	bulletPool.UpdatePool(deltaTime);
 
 	// update all other actors ------------------------------------------------------------//
 
@@ -185,7 +186,7 @@ void Render()
 		c->UpdateCircleComponent(actor->GetComponent<PhysicsComponent>());
 		
 	}
-	pool->RenderBullets();
+	bulletPool.RenderBullets();
 
 	playerActor->GetComponent<LineComponent>()->Render();
 

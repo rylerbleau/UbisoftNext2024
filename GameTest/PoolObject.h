@@ -9,11 +9,11 @@
 #include "Physics.h"
 #include <vector>
 
-class Bullet : public Actor
+class PoolObject : public Actor
 {
 public:
 
-	Bullet(Component* parent, float timeLeft_);
+	PoolObject(Component* parent, float timeLeft_);
 	void Update(const float deltaTime) override;
 
 
@@ -22,12 +22,6 @@ public:
 	void Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float timeLeft_);
 	float GetTimeLeft() { return timeLeft; }
 
-	static void AddLine();
-
-	static Line line;
-
-private:
-	static bool bulletCreated;
 
 protected:
 	Ref<Actor> owner;

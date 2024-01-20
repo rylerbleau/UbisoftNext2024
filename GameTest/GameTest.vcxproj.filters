@@ -23,9 +23,9 @@
     </ClCompile>
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="PoolObject.cpp" />
     <ClCompile Include="Command.cpp" />
-    <ClCompile Include="BulletPool.cpp" />
+    <ClCompile Include="ObjectPool.cpp" />
     <ClCompile Include="CircleComponent.cpp">
       <Filter>Components</Filter>
     </ClCompile>
@@ -71,9 +71,9 @@
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Actor.h" />
     <ClInclude Include="Interfaces.h" />
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="PoolObject.h" />
     <ClInclude Include="Command.h" />
-    <ClInclude Include="BulletPool.h" />
+    <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="CircleComponent.h">
       <Filter>Components</Filter>
     </ClInclude>

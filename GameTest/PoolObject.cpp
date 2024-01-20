@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "Bullet.h"
+#include "PoolObject.h"
 
 
 
-Bullet::Bullet(Component* parent, float timeLeft_) :Actor(parent){
+PoolObject::PoolObject(Component* parent, float timeLeft_) :Actor(parent){
 	timeLeft	= timeLeft_;
 	owner		= nullptr;
 	alive		= false;
@@ -11,7 +11,7 @@ Bullet::Bullet(Component* parent, float timeLeft_) :Actor(parent){
 	
 }
 
-void Bullet::Update(const float deltaTime)
+void PoolObject::Update(const float deltaTime)
 {
 	if (!alive)  return;
 	if (timeLeft <= 0.0f) { Kill(); }
@@ -24,7 +24,7 @@ void Bullet::Update(const float deltaTime)
 
 }
 
-void Bullet::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float timeLeft_)
+void PoolObject::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float timeLeft_)
 {
 	owner		= owner_;
 	timeLeft	= timeLeft_;
@@ -44,7 +44,3 @@ void Bullet::Init(MATH::Vec2 pos_, MATH::Vec2 vel_, Ref<Actor> owner_, float tim
 	
 }
 
-void Bullet::AddLine()
-{
-	
-}
