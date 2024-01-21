@@ -15,7 +15,33 @@ ObjectPool::ObjectPool() : currentSize(0)
 void ObjectPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_,
 		float r_, float g_, float b_)
 {
-	Ref<PoolObject> mostLikely = nullptr;;
+	Spawn(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_);
+}
+
+
+void ObjectPool::InstantiateRandom(Ref<Actor> owner)
+{
+	// random spawn parameters
+	float rad			= FRAND_RANGE(50.0f, 110.0f);
+	float timeLeft		= FRAND_RANGE(3.0f, 8.0f);
+	float r				= FRAND_RANGE(0.5f, 1.0f);
+	float g				= 0.0f; 
+	float b				= 0.0f;	
+
+	MATH::Vec2 pos		= MATH::Vec2(FRAND_RANGE(rad, APP_VIRTUAL_WIDTH - rad), APP_VIRTUAL_HEIGHT + rad);
+	MATH::Vec2 acc		= MATH::Vec2(0.0f, FRAND_RANGE(-0.0001, -0.001));
+	MATH::Vec2 vel		= MATH::Vec2(FRAND_RANGE(-0.2f, 0.2f), 0.0f);
+
+
+	Spawn(pos, vel, acc, owner, timeLeft, rad, 1.0f, r, g, b);
+
+
+}
+
+void ObjectPool::Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_, 
+	float r_, float g_, float b_)
+{
+	Ref<PoolObject> mostLikely = nullptr;
 	float lowestTime = FLT_MAX;
 	timeLeft_ *= 1000.0f;
 
@@ -35,6 +61,7 @@ void ObjectPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, 
 	// if we are full, override the oldest
 	mostLikely->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_);
 }
+
 
 void ObjectPool::UpdatePool(float deltaTime)
 {
@@ -60,3 +87,4 @@ void ObjectPool::RenderObjects()
 		}
 	}
 }
+

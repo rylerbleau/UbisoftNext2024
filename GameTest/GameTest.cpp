@@ -27,12 +27,12 @@
 
 
 
-//std::vector<Ref<Actor>> actors;
+std::vector<MATH::Circle> stars;
 Ref<Actor> playerActor;
 ObjectPool bulletPool;
 ObjectPool actorPool;
 Timer* timer;
-float interval;
+float interval = 3.0f;
 
 std::string text;
 PlayerController* playerController;
@@ -51,13 +51,10 @@ enum
 //------------------------------------------------------------------------
 void Init()
 {
-
 	playerActor = std::make_shared<Actor>(nullptr);
 	Component* parent = dynamic_cast<Component*>(playerActor.get());
 	
-
-	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(400, 400), MATH::Vec2(), MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
-
+	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f), MATH::Vec2(), MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
 
 	std::vector<Line> lines;
 	lines.push_back(Line{ MATH::Vec2(50.0f, -50.0f), MATH::Vec2(50.0f, 50.0f),1.0f, 0.0f, 0.0f });
@@ -72,9 +69,7 @@ void Init()
 	timer = new Timer;
 	timer->Start();
 	
-
 	playerActor->OnCreate();
-	
 }
 
 void HandleCollisions() {
@@ -105,7 +100,8 @@ void HandleCollisions() {
 void Update(float deltaTime)
 {
 	float t = timer->GetTimeInterval();
-	if (t >= 3.0f) {
+	if (t >= interval) {
+		actorPool.InstantiateRandom(nullptr);
 		timer->ResetTimeInterval();
 	}
 	
@@ -138,7 +134,7 @@ void Update(float deltaTime)
 		PHYSICS::SetOrientation(body, atan2(aim.y, aim.x) * RADIANS_TO_DEGREES);
 	}
 	body->Update(deltaTime);
-	PHYSICS::AddForce(body, move / 1000.0f);
+	PHYSICS::AddForce(body, MATH::Vec2(move.x, 0.0f) / 1000.0f);
 	line->UpdateLineComponent(body);
 
 	// update bullet pool ----------------------------------------------------------------//
@@ -150,6 +146,8 @@ void Update(float deltaTime)
 
 	
 	text = std::to_string(t);
+
+	HandleCollisions();
 
 
 }
@@ -171,12 +169,10 @@ void Render()
 	playerActor->GetComponent<LineComponent>()->Render();
 
 
-	App::DrawLine(400, 860, 400, 400, 0, 1, 0);
 
 
-	App::Print(100, 100, text.c_str());
+	//App::Print(100, 100, text.c_str());
 
-	HandleCollisions();
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
