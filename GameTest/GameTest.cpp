@@ -52,6 +52,10 @@ PlayerController* playerController;
 
 //------------------------------------------------------------------------
 
+// TODO next:
+
+// add powerups, high score, title screen?
+
 void Init()
 {
 	playerActor = std::make_shared<Actor>(nullptr);
