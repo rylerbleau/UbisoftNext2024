@@ -17,14 +17,15 @@ public:
 	~ObjectPool() {};
 
 	void Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_,
-	float r_, float g_, float b_);
+	float r_, float g_, float b_, bool colourUpdate);
 
 	void InstantiateRandom(Ref<Actor> owner);
 	void Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_,
-		float r_, float g_, float b_);
+		float r_, float g_, float b_, bool colourUpdate);
 	void UpdatePool(float deltaTime);
 	void Kill(const int i);
 	void RenderObjects();
+	void KillAll();
 
 	int GetCurrentSize() { return currentSize; }
 	std::array<Ref<PoolObject>, maxSize> objects;

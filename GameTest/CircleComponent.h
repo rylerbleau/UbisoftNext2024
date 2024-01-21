@@ -21,6 +21,10 @@ public:
     bool GetCollidable() { return collidable; }
     void SetCollidable(bool c) { collidable = c; }
 
+    void SetRGColour(MATH::Vec2 rg);
+    MATH::Vec2 GetRGColour() { return MATH::Vec2(r, g); }
+    MATH::Vec2 GetRGStartColour() { return MATH::Vec2(startR, startG); }
+
 private:
     float radius;
     MATH::Vec2 centre;
@@ -30,6 +34,8 @@ private:
     bool render;
     float numOfLines;
     float r, g, b;
+
+    float startR, startG, startB;
 
 
 

@@ -34,7 +34,7 @@ namespace App
 	
 	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b);
 
-
+	void DrawRect(MATH::Vec2 centre, MATH::Vec2 dimensions, bool fill, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 	//-------------------------------------------------------------------------------------------
 	// void Print(float x, float y, const char *text, float r = 1.0f, float g = 1.0f, float b = 1.0f, void *font = GLUT_BITMAP_HELVETICA_18);

@@ -62,6 +62,54 @@ namespace App
 	}
 
 	}
+
+	void DrawRect(MATH::Vec2 centre, MATH::Vec2 dimensions, bool fill, float r, float g, float b)
+	{
+
+		// no fill
+		if (!fill) {
+			DrawLine(centre.x - (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y),
+				centre.x + (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y), r, g, b);
+
+			DrawLine(centre.x - (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y),
+				centre.x - (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y), r, g, b);
+
+			DrawLine(centre.x - (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y),
+				centre.x + (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y), r, g, b);
+
+			DrawLine(centre.x + (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y),
+				centre.x + (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y), r, g, b);
+			return;
+		}
+
+
+		// fill
+
+#if APP_USE_VIRTUAL_RES		
+		APP_VIRTUAL_TO_NATIVE_COORDS(centre.x, centre.y);
+		APP_VIRTUAL_TO_NATIVE_COORDS(dimensions.x, dimensions.y);
+		
+#endif
+		
+
+		if (fill) {
+
+			glBegin(GL_TRIANGLES);
+			glColor3f(r, g, b);
+			glVertex2f(centre.x - (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y));
+			glVertex2f(centre.x + (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y));
+			glVertex2f(centre.x + (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y));
+			glEnd();
+
+			glBegin(GL_TRIANGLES);
+			glColor3f(r, g, b);
+			glVertex2f(centre.x - (0.5f * dimensions.x), centre.y + (0.5f * dimensions.y));
+			glVertex2f(centre.x + (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y));
+			glVertex2f(centre.x - (0.5f * dimensions.x), centre.y - (0.5f * dimensions.y));
+			glEnd();
+		}
+		
+	}
 	
 
 	

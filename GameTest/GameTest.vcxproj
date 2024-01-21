@@ -193,6 +193,7 @@
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PlayerController.h" />
+    <ClInclude Include="ProgressBar.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="2DMath.h" />
     <ClInclude Include="stb_image\stb_image.h" />
@@ -215,6 +216,7 @@
     <ClCompile Include="LineComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PlayerController.cpp" />
+    <ClCompile Include="ProgressBar.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="stb_image\stb_image.cpp" />
     <ClCompile Include="stdafx.cpp">

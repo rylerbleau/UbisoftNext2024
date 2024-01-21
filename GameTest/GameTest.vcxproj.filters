@@ -22,7 +22,6 @@
       <Filter>stb_image</Filter>
     </ClCompile>
     <ClCompile Include="PlayerController.cpp" />
-    <ClCompile Include="Actor.cpp" />
     <ClCompile Include="PoolObject.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="ObjectPool.cpp" />
@@ -39,6 +38,10 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Actor.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgressBar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -70,7 +73,6 @@
       <Filter>GameMath</Filter>
     </ClInclude>
     <ClInclude Include="PlayerController.h" />
-    <ClInclude Include="Actor.h" />
     <ClInclude Include="Interfaces.h" />
     <ClInclude Include="PoolObject.h" />
     <ClInclude Include="Command.h" />
@@ -94,6 +96,10 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Actor.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgressBar.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="NextAPI">

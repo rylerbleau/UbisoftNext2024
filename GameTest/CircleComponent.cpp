@@ -11,6 +11,10 @@ CircleComponent::CircleComponent(Component* parent, MATH::Vec2 centre_, float ra
 	g				= g_;
 	b				= b_;
 
+	startR			= r;
+	startG			= g;
+	startB			= b;
+
 	collidable		= true;
 	render			= render_;
 
@@ -25,4 +29,10 @@ void CircleComponent::Render() const
 void CircleComponent::UpdateCircleComponent(Ref<PhysicsComponent> body)
 {
 	centre = body->pos;
+}
+
+void CircleComponent::SetRGColour(MATH::Vec2 rg)
+{
+	r = rg.x;
+	g = rg.y;
 }

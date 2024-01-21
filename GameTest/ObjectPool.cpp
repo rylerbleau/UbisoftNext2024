@@ -13,9 +13,9 @@ ObjectPool::ObjectPool() : currentSize(0)
 }
 
 void ObjectPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_,
-		float r_, float g_, float b_)
+		float r_, float g_, float b_, bool colourUpdate)
 {
-	Spawn(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_);
+	Spawn(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate);
 }
 
 
@@ -23,7 +23,10 @@ void ObjectPool::InstantiateRandom(Ref<Actor> owner)
 {
 	// random spawn parameters
 	float rad			= FRAND_RANGE(50.0f, 110.0f);
-	float timeLeft		= FRAND_RANGE(3.0f, 8.0f);
+
+	float t				= FRAND_RANGE(0, 1);
+
+	float timeLeft		= 3.0f + (5.0f * t);
 	float r				= FRAND_RANGE(0.5f, 1.0f);
 	float g				= 0.0f; 
 	float b				= 0.0f;	
@@ -33,22 +36,25 @@ void ObjectPool::InstantiateRandom(Ref<Actor> owner)
 	MATH::Vec2 vel		= MATH::Vec2(FRAND_RANGE(-0.2f, 0.2f), 0.0f);
 
 
-	Spawn(pos, vel, acc, owner, timeLeft, rad, 1.0f, r, g, b);
+	Spawn(pos, vel, acc, owner, timeLeft, rad, 1.0f, r, g, b, true);
 
 
 }
 
 void ObjectPool::Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_, 
-	float r_, float g_, float b_)
+	float r_, float g_, float b_, bool colourUpdate)
 {
+	
 	Ref<PoolObject> mostLikely = nullptr;
 	float lowestTime = FLT_MAX;
 	timeLeft_ *= 1000.0f;
 
 
+
 	for (Ref<PoolObject> ob : objects) {
 		if (!ob->InUse()) {
-			ob->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_);
+			ob->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate);
+			currentSize += 1;
 			return;
 		}
 		// track oldest, just in case full
@@ -59,15 +65,24 @@ void ObjectPool::Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Ac
 	}
 
 	// if we are full, override the oldest
-	mostLikely->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_);
+	mostLikely->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate);
+
+}
+
+void ObjectPool::KillAll()
+{
+	currentSize = 0;
+	for (Ref<PoolObject> ob : objects) {
+		ob->Kill();
+	}
 }
 
 
 void ObjectPool::UpdatePool(float deltaTime)
 {
-	for (Ref<PoolObject> bullet : objects) {
-		if (bullet->InUse()) {
-			bullet->Update(deltaTime);
+	for (Ref<PoolObject> ob : objects) {
+		if (ob->InUse()) {
+			ob->Update(deltaTime);
 
 		}
 	}

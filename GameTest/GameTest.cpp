@@ -29,12 +29,15 @@
 
 std::vector<MATH::Circle> stars;
 Ref<Actor> playerActor;
+Ref<Actor> AmmoUI;
 ObjectPool bulletPool;
 ObjectPool actorPool;
 Timer* timer;
 float interval = 3.0f;
+bool playing = false; 
 
-std::string text;
+std::string text1 = "A to shoot, left stick to move.";
+std::string text2 = "How long can you survive? Press X to start";
 PlayerController* playerController;
 
 enum
@@ -55,6 +58,7 @@ void Init()
 	Component* parent = dynamic_cast<Component*>(playerActor.get());
 	
 	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f), MATH::Vec2(), MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
+	playerActor->AddComponent<CircleComponent>(parent, MATH::Vec2(0, 0), 10.0f, 20.0f, 0, 0, 0, false);
 
 	std::vector<Line> lines;
 	lines.push_back(Line{ MATH::Vec2(50.0f, -50.0f), MATH::Vec2(50.0f, 50.0f),1.0f, 0.0f, 0.0f });
@@ -64,12 +68,28 @@ void Init()
 
 	playerActor->AddComponent<LineComponent>(parent, lines, MATH::Vec2(0.0f, 0.0f));
 	
-	actorPool.Instantiate(MATH::Vec2(400, 800), MATH::Vec2(), MATH::Vec2(0, -0.0005f), nullptr, 2.0f, 100.0f, 1, 1, 0, 0);
+	
 
 	timer = new Timer;
 	timer->Start();
 	
 	playerActor->OnCreate();
+}
+
+void PreGameRender() {
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 150, 300, text1.c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 250, text2.c_str());
+
+
+}
+
+void ResetGame() {
+	timer->Stop();
+	playing = false;
+	actorPool.KillAll();
+	bulletPool.KillAll();
+	playerActor->GetComponent<PhysicsComponent>()->pos = MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f);
+	playerActor->GetComponent<PhysicsComponent>()->vel = MATH::Vec2();
 }
 
 void HandleCollisions() {
@@ -86,9 +106,12 @@ void HandleCollisions() {
 		}
 		if (COLLISIONS::BoundingBoxCircleCollision(aCircle, aBody, 0.0f, APP_VIRTUAL_WIDTH, 0.0f, APP_VIRTUAL_HEIGHT)) {
 			// ball hit the floor *DEAD*
+			ResetGame();
 			continue;
 		}
 	}
+	COLLISIONS::BoundingBoxCircleCollision(playerActor->GetComponent<CircleComponent>(),
+		playerActor->GetComponent<PhysicsComponent>(), 0.0f, APP_VIRTUAL_WIDTH, 0.0f, APP_VIRTUAL_HEIGHT);
 
 
 }
@@ -99,6 +122,15 @@ void HandleCollisions() {
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
+	if (!playing) {
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_X, true))
+		{
+			timer->Start();
+			playing = true;
+		}
+	}
+
+
 	float t = timer->GetTimeInterval();
 	if (t >= interval) {
 		actorPool.InstantiateRandom(nullptr);
@@ -109,13 +141,14 @@ void Update(float deltaTime)
 
 	Ref<PhysicsComponent> body = playerActor->GetComponent<PhysicsComponent>();
 	Ref<LineComponent> line = playerActor->GetComponent<LineComponent>();
+	Ref<CircleComponent> circle = playerActor->GetComponent<CircleComponent>();
 
 	
 	// handle input ---------------------------------------------------------------------//
 
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_RIGHT_SHOULDER, true))
+	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
 	{
-		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0);
+		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0, false);
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
@@ -136,6 +169,7 @@ void Update(float deltaTime)
 	body->Update(deltaTime);
 	PHYSICS::AddForce(body, MATH::Vec2(move.x, 0.0f) / 1000.0f);
 	line->UpdateLineComponent(body);
+	circle->UpdateCircleComponent(body);
 
 	// update bullet pool ----------------------------------------------------------------//
 
@@ -145,7 +179,7 @@ void Update(float deltaTime)
 	// update all other actors ------------------------------------------------------------//
 
 	
-	text = std::to_string(t);
+	
 
 	HandleCollisions();
 
@@ -159,9 +193,10 @@ void Update(float deltaTime)
 void Render()
 {	
 
-	// CURRENT WORK: bullets, object pooling / interfaces
-	// 
-
+	if (!playing) {
+		PreGameRender();
+		return;
+	}
 	
 	bulletPool.RenderObjects();
 	actorPool.RenderObjects();
@@ -170,8 +205,6 @@ void Render()
 
 
 
-
-	//App::Print(100, 100, text.c_str());
 
 }
 //------------------------------------------------------------------------
