@@ -10,14 +10,15 @@ public:
 
 	void Update(float deltaTime);
 	void Render();
-	void SetProgress(float cur_, float max_);
+	void SetProgress(float cur_, float max_ = 0.0f);
 
 	
 private:
 	float lerpT;
 	float max;
 	float cur;
-	float decayRate;
+	float percentage;
+	float lerpRate;
 
 	float r, g, b;
 	float fillR, fillG, fillB;

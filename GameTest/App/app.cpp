@@ -23,7 +23,7 @@ namespace App
 		APP_VIRTUAL_TO_NATIVE_COORDS(ex, ey);
 #endif
 		glBegin(GL_LINES);
-		glColor3f(r, g, b); // Yellow
+		glColor3f(r, g, b); 
 		glVertex2f(sx, sy);
 		glVertex2f(ex, ey);
 
@@ -87,7 +87,9 @@ namespace App
 
 #if APP_USE_VIRTUAL_RES		
 		APP_VIRTUAL_TO_NATIVE_COORDS(centre.x, centre.y);
-		APP_VIRTUAL_TO_NATIVE_COORDS(dimensions.x, dimensions.y);
+		dimensions.x = 2.0f * dimensions.x / APP_VIRTUAL_WIDTH;
+		dimensions.y = 2.0f * dimensions.y / APP_VIRTUAL_HEIGHT;
+
 		
 #endif
 		

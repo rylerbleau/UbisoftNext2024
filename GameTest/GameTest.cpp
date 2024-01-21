@@ -16,6 +16,7 @@
 #include "CircleComponent.h"
 #include "Actor.h"
 #include "Physics.h"
+#include "ProgressBar.h"
 #include <vector>
 #include "Timer.h"
 
@@ -29,10 +30,10 @@
 
 std::vector<MATH::Circle> stars;
 Ref<Actor> playerActor;
-Ref<Actor> AmmoUI;
 ObjectPool bulletPool;
 ObjectPool actorPool;
 Timer* timer;
+ProgressBar* AmmoBar;
 float interval = 3.0f;
 bool playing = false; 
 
@@ -68,8 +69,8 @@ void Init()
 
 	playerActor->AddComponent<LineComponent>(parent, lines, MATH::Vec2(0.0f, 0.0f));
 	
-	
 
+	AmmoBar = new ProgressBar(MATH::Vec2(400, 400), MATH::Vec2(200, 50), 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f);
 	timer = new Timer;
 	timer->Start();
 	
@@ -128,12 +129,13 @@ void Update(float deltaTime)
 			timer->Start();
 			playing = true;
 		}
+		else return;
 	}
 
 
 	float t = timer->GetTimeInterval();
 	if (t >= interval) {
-		actorPool.InstantiateRandom(nullptr);
+		//actorPool.InstantiateRandom(nullptr);
 		timer->ResetTimeInterval();
 	}
 	
@@ -152,8 +154,10 @@ void Update(float deltaTime)
 	}
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
 	{
-		App::PlaySound(".\\TestData\\Test.wav");
+		AmmoBar->SetProgress(0.5f, 1.0f);
 	}
+	
+
 
 	MATH::Vec2 move = playerController->GetLeftStick(0);
 	MATH::Vec2 aim = playerController->GetRightStick(0);
@@ -178,7 +182,7 @@ void Update(float deltaTime)
 
 	// update all other actors ------------------------------------------------------------//
 
-	
+	AmmoBar->Update(deltaTime);
 	
 
 	HandleCollisions();
@@ -202,7 +206,7 @@ void Render()
 	actorPool.RenderObjects();
 
 	playerActor->GetComponent<LineComponent>()->Render();
-
+	AmmoBar->Render();
 
 
 
@@ -217,5 +221,6 @@ void Shutdown()
 	
 	delete playerController;
 	delete timer;
+	delete AmmoBar;
 	//------------------------------------------------------------------------
 }
