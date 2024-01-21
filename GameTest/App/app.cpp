@@ -125,6 +125,7 @@ namespace App
 		return ((GetAsyncKeyState(key) & 0x8000) != 0);
 	}
 
+
 	void GetMousePos(float &x, float &y)
 	{
 		POINT mousePos;

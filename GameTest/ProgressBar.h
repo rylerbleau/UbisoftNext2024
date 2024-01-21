@@ -11,14 +11,21 @@ public:
 	void Update(float deltaTime);
 	void Render();
 	void SetProgress(float cur_, float max_ = 0.0f);
+	void SetPosition(MATH::Vec2 centre_) { centre = centre_; }
 
 	
 private:
-	float lerpT;
+	// real values
 	float max;
 	float cur;
+
+	// 0-1
 	float percentage;
 	float lerpRate;
+	float lerpT;
+	float startPercent;
+	float targetPercent;
+
 
 	float r, g, b;
 	float fillR, fillG, fillB;

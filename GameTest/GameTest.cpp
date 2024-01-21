@@ -22,11 +22,7 @@
 
 //------------------------------------------------------------------------
 
-//------------------------------------------------------------------------
-// Eample data....
-//------------------------------------------------------------------------
-
-
+#pragma region DATA
 
 std::vector<MATH::Circle> stars;
 Ref<Actor> playerActor;
@@ -34,25 +30,28 @@ ObjectPool bulletPool;
 ObjectPool actorPool;
 Timer* timer;
 ProgressBar* AmmoBar;
+ProgressBar* HealthBar;
 float interval = 3.0f;
 bool playing = false; 
+float maxHeat = 10.0f;
+float curHeat = 0.0f;
+float maxHP = 5.0f;
+float curHP = maxHP;
+bool shooting = false;
+bool released = true;
 
-std::string text1 = "A to shoot, left stick to move.";
-std::string text2 = "How long can you survive? Press X to start";
+std::string text1 = "                     Keyboard:                           Controller:";
+std::string text2 = " Move->            A/D                                Left Stick";
+std::string text3 = "Shoot->           Space                                    A";
+std::string text4 = "Start->                 E                                         X";
+
 PlayerController* playerController;
 
-enum
-{
-	ANIM_FORWARDS,
-	ANIM_BACKWARDS,
-	ANIM_LEFT,
-	ANIM_RIGHT,
-};
-//------------------------------------------------------------------------
+
+#pragma endregion
 
 //------------------------------------------------------------------------
-// Called before first update. Do any initial setup here.
-//------------------------------------------------------------------------
+
 void Init()
 {
 	playerActor = std::make_shared<Actor>(nullptr);
@@ -70,19 +69,24 @@ void Init()
 	playerActor->AddComponent<LineComponent>(parent, lines, MATH::Vec2(0.0f, 0.0f));
 	
 
-	AmmoBar = new ProgressBar(MATH::Vec2(400, 400), MATH::Vec2(200, 50), 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	AmmoBar = new ProgressBar(MATH::Vec2(APP_VIRTUAL_WIDTH / 2, APP_VIRTUAL_HEIGHT - 10.0f), MATH::Vec2(APP_VIRTUAL_WIDTH, 20), 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f);
+	HealthBar = new ProgressBar(MATH::Vec2(), MATH::Vec2(100.0f, 20.0f), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+
 	timer = new Timer;
 	timer->Start();
 	
 	playerActor->OnCreate();
 }
+//------------------------------------------------------------------------
 
 void PreGameRender() {
-	App::Print(APP_VIRTUAL_WIDTH / 2 - 150, 300, text1.c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 300, text1.c_str());
 	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 250, text2.c_str());
-
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 200, text3.c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 150, text4.c_str());
 
 }
+//------------------------------------------------------------------------
 
 void ResetGame() {
 	timer->Stop();
@@ -91,7 +95,10 @@ void ResetGame() {
 	bulletPool.KillAll();
 	playerActor->GetComponent<PhysicsComponent>()->pos = MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f);
 	playerActor->GetComponent<PhysicsComponent>()->vel = MATH::Vec2();
+	curHeat = 0.0f;
+	curHP = maxHP;
 }
+//------------------------------------------------------------------------
 
 void HandleCollisions() {
 	for (Ref<PoolObject> a : actorPool.objects) {
@@ -117,14 +124,25 @@ void HandleCollisions() {
 
 }
 
-//------------------------------------------------------------------------
-// Update your simulation here. deltaTime is the elapsed time since the last update in ms.
-// This will be called at no greater frequency than the value of APP_MAX_FRAME_RATE
+bool CheckShooting() {
+	shooting = App::IsKeyPressed(' ');
+	if (shooting) {
+		if (released) {
+			released = false;
+			return true;
+		}
+	}
+	else {
+		released = true;
+		return false;
+	}
+}
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
+	
 	if (!playing) {
-		if (App::GetController().CheckButton(XINPUT_GAMEPAD_X, true))
+		if (App::GetController().CheckButton(XINPUT_GAMEPAD_X, true) || App::IsKeyPressed('E'))
 		{
 			timer->Start();
 			playing = true;
@@ -135,7 +153,7 @@ void Update(float deltaTime)
 
 	float t = timer->GetTimeInterval();
 	if (t >= interval) {
-		//actorPool.InstantiateRandom(nullptr);
+		actorPool.InstantiateRandom(nullptr);
 		timer->ResetTimeInterval();
 	}
 	
@@ -148,14 +166,14 @@ void Update(float deltaTime)
 	
 	// handle input ---------------------------------------------------------------------//
 
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true))
+	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true) || CheckShooting())
 	{
-		bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0, false);
+		if (curHeat < maxHeat) {
+			curHeat += 2.0f;
+			bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0, false);
+		}
 	}
-	if (App::GetController().CheckButton(XINPUT_GAMEPAD_B, true))
-	{
-		AmmoBar->SetProgress(0.5f, 1.0f);
-	}
+	
 	
 
 
@@ -175,24 +193,27 @@ void Update(float deltaTime)
 	line->UpdateLineComponent(body);
 	circle->UpdateCircleComponent(body);
 
-	// update bullet pool ----------------------------------------------------------------//
+	// update object pools ----------------------------------------------------------------//
 
 	bulletPool.UpdatePool(deltaTime);
 	actorPool.UpdatePool(deltaTime);
 
-	// update all other actors ------------------------------------------------------------//
+	// UI --------------------------------------------------------------------------------//
 
+	if (curHeat > 0.0f) {
+		curHeat -= 0.005f * deltaTime;
+
+	}
+	AmmoBar->SetProgress(curHeat, maxHeat);
 	AmmoBar->Update(deltaTime);
 	
+	// Collision --------------------------------------------------------------------------//
 
 	HandleCollisions();
 
 
 }
 
-//------------------------------------------------------------------------
-// Add your display calls here (DrawLine,Print, DrawSprite.) 
-// See App.h 
 //------------------------------------------------------------------------
 void Render()
 {	
@@ -207,20 +228,17 @@ void Render()
 
 	playerActor->GetComponent<LineComponent>()->Render();
 	AmmoBar->Render();
-
-
+	int t = std::floor(timer->GetElapsedSeconds());
+	App::Print(APP_VIRTUAL_WIDTH / 2, APP_VIRTUAL_WIDTH / 2, std::to_string(t).c_str(), 1.0f, 0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24);
 
 }
-//------------------------------------------------------------------------
-// Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
-// Just before the app exits.
+
 //------------------------------------------------------------------------
 void Shutdown()
 {	
-	
-	
 	delete playerController;
 	delete timer;
 	delete AmmoBar;
-	//------------------------------------------------------------------------
+	delete HealthBar;
 }
+//------------------------------------------------------------------------

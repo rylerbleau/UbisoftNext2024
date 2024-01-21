@@ -19,14 +19,19 @@ ProgressBar::ProgressBar(MATH::Vec2 centre_, MATH::Vec2 dim_, float r_, float g_
 	fillG			= fg_;
 	fillB			= fb_;
 
-	percentage		= 1.0f;
+	percentage		= 0.0f;
 
 }
 
 void ProgressBar::Update(float deltaTime)
 {
+	if (lerpT < 1.0f) {
+		// lerp
+		lerpT += lerpRate;
+		percentage = MATH::Lerp(startPercent, targetPercent, lerpT);
 
-	percentage = cur / max;
+	}
+	
 }
 
 void ProgressBar::Render()
@@ -39,8 +44,13 @@ void ProgressBar::Render()
 
 void ProgressBar::SetProgress(float cur_, float max_)
 {
+	lerpT = 0.0f;
+	startPercent = percentage;
 	if (!max_ == 0.0f) {
 		max = max_;
 	}
-	cur = cur_;
+	if (cur_ >= max) cur = max;
+	else cur = cur_;
+
+	targetPercent = cur / max;
 }

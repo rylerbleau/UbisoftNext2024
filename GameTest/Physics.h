@@ -88,11 +88,14 @@ namespace COLLISIONS {
 	inline static bool BoundingBoxCircleCollision(Ref<CircleComponent> circle, Ref<PhysicsComponent> body, float xNeg, float xPos, float yNeg, float yPos) {
 		if (circle->GetCircle().centre.x - circle->GetCircle().r <= xNeg) {
 			// hit left side
+			body->pos.x += 2.0f;
 			body->vel.x *= -1;
 			return false;
 		}
 		else if (circle->GetCircle().centre.x + circle->GetCircle().r >= xPos) {
 			// hit right side
+			body->pos.x -= 2.0f;
+
 			body->vel.x *= -1;
 			return false;
 		}

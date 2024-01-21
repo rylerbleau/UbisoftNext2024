@@ -14,6 +14,8 @@ public:
 
 	Command* HandleButtons(int id);
 
+
+
 	int GetAnimState(MATH::Vec2 dir);
 
 };
