@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "CircleComponent.h"
 
-CircleComponent::CircleComponent(Component* parent, MATH::Vec2 centre_, float radius_, float numOfLines_, float r_, float g_, float b_, bool render_)
+CircleComponent::CircleComponent(Component* parent, MATH::Vec2 centre_, float radius_, float numOfLines_, 
+	float r_, float g_, float b_, bool render_, bool fill_)
 	:Component(parent)
 {
 	centre			= centre_;
@@ -18,18 +19,22 @@ CircleComponent::CircleComponent(Component* parent, MATH::Vec2 centre_, float ra
 	collidable		= true;
 	render			= render_;
 
+	fill			= fill_;
+
 }
 
 void CircleComponent::Render() const
 {
 	if (!render) return;
-	App::DrawCircle(centre, radius, numOfLines, r, g, b);
+	App::DrawCircle(centre, radius, numOfLines, r, g, b, fill);
 }
 
 void CircleComponent::UpdateCircleComponent(Ref<PhysicsComponent> body)
 {
 	centre = body->pos;
 }
+
+
 
 void CircleComponent::SetRGColour(MATH::Vec2 rg)
 {

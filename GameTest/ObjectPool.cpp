@@ -13,9 +13,9 @@ ObjectPool::ObjectPool() : currentSize(0)
 }
 
 void ObjectPool::Instantiate(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_,
-		float r_, float g_, float b_, bool colourUpdate)
+		float r_, float g_, float b_, bool colourUpdate, bool fill_)
 {
-	Spawn(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate);
+	Spawn(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate, fill_);
 }
 
 
@@ -36,13 +36,13 @@ void ObjectPool::InstantiateRandom(Ref<Actor> owner)
 	MATH::Vec2 vel		= MATH::Vec2(FRAND_RANGE(-0.2f, 0.2f), 0.0f);
 
 
-	Spawn(pos, vel, acc, owner, timeLeft, rad, 1.0f, r, g, b, true);
+	Spawn(pos, vel, acc, owner, timeLeft, rad, 1.0f, r, g, b, true, true);
 
 
 }
 
 void ObjectPool::Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_, 
-	float r_, float g_, float b_, bool colourUpdate)
+	float r_, float g_, float b_, bool colourUpdate, bool fill_)
 {
 	
 	Ref<PoolObject> mostLikely = nullptr;
@@ -53,7 +53,7 @@ void ObjectPool::Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Ac
 
 	for (Ref<PoolObject> ob : objects) {
 		if (!ob->InUse()) {
-			ob->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate);
+			ob->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate, fill_);
 			currentSize += 1;
 			return;
 		}
@@ -65,7 +65,7 @@ void ObjectPool::Spawn(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Ac
 	}
 
 	// if we are full, override the oldest
-	mostLikely->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate);
+	mostLikely->Init(pos_, vel_, acc_, owner_, timeLeft_, rad_, m_, r_, g_, b_, colourUpdate, fill_);
 
 }
 

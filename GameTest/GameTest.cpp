@@ -58,7 +58,7 @@ void Init()
 	Component* parent = dynamic_cast<Component*>(playerActor.get());
 	
 	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f), MATH::Vec2(), MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
-	playerActor->AddComponent<CircleComponent>(parent, MATH::Vec2(0, 0), 10.0f, 20.0f, 0, 0, 0, false);
+	playerActor->AddComponent<CircleComponent>(parent, MATH::Vec2(0, 0), 10.0f, 20.0f, 0, 0, 0, false, true);
 
 	std::vector<Line> lines;
 	lines.push_back(Line{ MATH::Vec2(50.0f, -50.0f), MATH::Vec2(50.0f, 50.0f),1.0f, 0.0f, 0.0f });
@@ -70,7 +70,7 @@ void Init()
 	
 
 	AmmoBar = new ProgressBar(MATH::Vec2(APP_VIRTUAL_WIDTH / 2, APP_VIRTUAL_HEIGHT - 10.0f), MATH::Vec2(APP_VIRTUAL_WIDTH, 20), 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f);
-	HealthBar = new ProgressBar(MATH::Vec2(), MATH::Vec2(100.0f, 20.0f), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
+	HealthBar = new ProgressBar(MATH::Vec2(400.0f, 100.0f), MATH::Vec2(100.0f, 20.0f), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
 
 	timer = new Timer;
 	timer->Start();
@@ -114,7 +114,8 @@ void HandleCollisions() {
 		}
 		if (COLLISIONS::BoundingBoxCircleCollision(aCircle, aBody, 0.0f, APP_VIRTUAL_WIDTH, 0.0f, APP_VIRTUAL_HEIGHT)) {
 			// ball hit the floor *DEAD*
-			ResetGame();
+			curHP -= 1.0f;
+			a->Kill();
 			continue;
 		}
 	}
@@ -170,7 +171,7 @@ void Update(float deltaTime)
 	{
 		if (curHeat < maxHeat) {
 			curHeat += 2.0f;
-			bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0, false);
+			bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0, false, true);
 		}
 	}
 	
@@ -206,12 +207,18 @@ void Update(float deltaTime)
 	}
 	AmmoBar->SetProgress(curHeat, maxHeat);
 	AmmoBar->Update(deltaTime);
+
+	HealthBar->SetProgress(curHP, maxHP);
+	HealthBar->Update(deltaTime);
+	HealthBar->SetPosition(MATH::Vec2(body->pos.x, HealthBar->GetPos().y));
 	
 	// Collision --------------------------------------------------------------------------//
 
 	HandleCollisions();
 
-
+	if (curHP <= 0.0f) {
+		ResetGame();
+	}
 }
 
 //------------------------------------------------------------------------
@@ -228,6 +235,7 @@ void Render()
 
 	playerActor->GetComponent<LineComponent>()->Render();
 	AmmoBar->Render();
+	HealthBar->Render();
 	int t = std::floor(timer->GetElapsedSeconds());
 	App::Print(APP_VIRTUAL_WIDTH / 2, APP_VIRTUAL_WIDTH / 2, std::to_string(t).c_str(), 1.0f, 0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24);
 

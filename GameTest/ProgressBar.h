@@ -12,6 +12,7 @@ public:
 	void Render();
 	void SetProgress(float cur_, float max_ = 0.0f);
 	void SetPosition(MATH::Vec2 centre_) { centre = centre_; }
+	MATH::Vec2 GetPos() { return centre; }
 
 	
 private:

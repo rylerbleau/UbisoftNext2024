@@ -30,7 +30,7 @@ namespace App
 		glEnd();
 	}
 
-	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b)
+	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b, bool fill)
 	{
 		float angleIncrement = 2.0f * PI / numOfLines;
 		
@@ -42,24 +42,48 @@ namespace App
 
 #endif
 	
+		
+		if(fill){
+			for (int i = 0; i < numOfLines; ++i) {
+				glBegin(GL_TRIANGLES);
+				glColor3f(r, g, b);
+				float angleStart = i * angleIncrement;
+				float angleEnd = (i + 1) * angleIncrement;
 
-	for (int i = 0; i < numOfLines; ++i) {
-		glBegin(GL_TRIANGLES);
-		glColor3f(r, g, b);
-		float angleStart = i * angleIncrement;
-		float angleEnd = (i + 1) * angleIncrement;
+				float startX = centre.x + radius * std::cos(angleStart);
+				float startY = centre.y + radius * std::sin(angleStart);
 
-		float startX = centre.x + radius * std::cos(angleStart);
-		float startY = centre.y + radius * std::sin(angleStart);
+				float endX = centre.x + radius * std::cos(angleEnd);
+				float endY = centre.y + radius * std::sin(angleEnd);
 
-		float endX = centre.x + radius * std::cos(angleEnd);
-		float endY = centre.y + radius * std::sin(angleEnd);
+				glVertex2f(startX, startY);
+				glVertex2f(endX, endY);
+				glVertex2f(centre.x, centre.y);
+				glEnd();
+			}
+		}
 
-		glVertex2f(startX, startY);
-		glVertex2f(endX, endY);
-		glVertex2f(centre.x, centre.y);
-		glEnd();
-	}
+		
+		else {
+			for (int i = 0; i < numOfLines; ++i) {
+				glBegin(GL_LINES);
+				glColor3f(r, g, b);
+				float angleStart = i * angleIncrement;
+				float angleEnd = (i + 1) * angleIncrement;
+
+				float startX = centre.x + radius * std::cos(angleStart);
+				float startY = centre.y + radius * std::sin(angleStart);
+
+				float endX = centre.x + radius * std::cos(angleEnd);
+				float endY = centre.y + radius * std::sin(angleEnd);
+
+				glVertex2f(startX, startY);
+				glVertex2f(endX, endY);
+
+				glEnd();
+			}
+		}
+		
 
 	}
 

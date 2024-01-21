@@ -20,7 +20,7 @@ public:
 	bool InUse() const { return alive; }
 	void Kill() { if(alive) alive = false; }
 	void Init(MATH::Vec2 pos_, MATH::Vec2 vel_, MATH::Vec2 acc_, Ref<Actor> owner_, float timeLeft_, float rad_, float m_, 
-		float r_, float g_, float b_, bool colourUpdate);
+		float r_, float g_, float b_, bool colourUpdate, bool fill_ = false);
 	float GetTimeLeft() { return timeLeft; }
 
 

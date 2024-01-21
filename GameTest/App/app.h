@@ -32,7 +32,7 @@ namespace App
 	//-------------------------------------------------------------------------------------------
 	void DrawLine( float sx, float sy, float ex, float ey, float r = 1.0f, float g = 1.0f, float b = 1.0f );
 	
-	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b);
+	void DrawCircle(MATH::Vec2 centre, float radius, float numOfLines, float r, float g, float b, bool fill);
 
 	void DrawRect(MATH::Vec2 centre, MATH::Vec2 dimensions, bool fill, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
