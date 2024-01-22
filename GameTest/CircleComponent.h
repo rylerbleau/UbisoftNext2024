@@ -22,6 +22,9 @@ public:
     bool GetCollidable() { return collidable; }
     void SetCollidable(bool c) { collidable = c; }
 
+    bool GetRenderable() { return render; }
+    void SetRenderable(bool r) { render = r; }
+
     void SetRGColour(MATH::Vec2 rg);
     MATH::Vec2 GetRGColour() { return MATH::Vec2(r, g); }
     MATH::Vec2 GetRGStartColour() { return MATH::Vec2(startR, startG); }
@@ -39,7 +42,7 @@ private:
 
     float startR, startG, startB;
 
-
+    
 
 };
 

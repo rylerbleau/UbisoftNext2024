@@ -42,6 +42,10 @@
       <Filter>Components</Filter>
     </ClCompile>
     <ClCompile Include="ProgressBar.cpp" />
+    <ClCompile Include="Collectible.cpp" />
+    <ClCompile Include="RectangleComponent.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -100,6 +104,10 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="ProgressBar.h" />
+    <ClInclude Include="Collectible.h" />
+    <ClInclude Include="RectangleComponent.h">
+      <Filter>Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="NextAPI">

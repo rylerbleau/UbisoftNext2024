@@ -49,8 +49,12 @@ void ProgressBar::SetProgress(float cur_, float max_)
 	if (!max_ == 0.0f) {
 		max = max_;
 	}
-	if (cur_ >= max) cur = max;
-	else cur = cur_;
-
+	
+	if (cur_ >= max) {
+		cur = max;
+	}
+	else {
+		cur = cur_;
+	}
 	targetPercent = cur / max;
 }

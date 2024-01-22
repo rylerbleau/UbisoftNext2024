@@ -81,9 +81,16 @@ namespace COLLISIONS {
 			circle2->SetCollidable(false);
 			body2->accel = Vec2(0.0f, -0.1f);
 		}
-
-
 	}
+	inline static bool CircleCircleCollisionTest(Ref<CircleComponent> circle1, Ref<CircleComponent> circle2) {
+		Circle c1 = circle1->GetCircle();
+		Circle c2 = circle2->GetCircle();
+		float d = Vec2::distance(c1.centre, c2.centre);
+		if (d <= c1.r + c2.r) return true;
+		return false;
+	}
+
+
 
 	inline static bool BoundingBoxCircleCollision(Ref<CircleComponent> circle, Ref<PhysicsComponent> body, float xNeg, float xPos, float yNeg, float yPos) {
 		if (circle->GetCircle().centre.x - circle->GetCircle().r <= xNeg) {

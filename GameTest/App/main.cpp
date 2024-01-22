@@ -188,16 +188,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, 	_In_opt_ HINSTANCE hPrevInstanc
 	InitGL();                       // Our own OpenGL initialization
 
 
-	// redirect cout to txt file
-	// TODO remove
-	std::ofstream file;
-	file.open("cout.txt");
-	std::streambuf* sbuf = std::cout.rdbuf();
-	std::cout.rdbuf(file.rdbuf());
-
-
-
-
 	// Init sounds system.
 	CSimpleSound::GetInstance().Initialize(MAIN_WINDOW_HANDLE);
 	

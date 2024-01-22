@@ -9,10 +9,10 @@ class Timer
 private:
 	time_point<system_clock> startTime;
 	time_point<system_clock> endTime;
-	time_point<system_clock> lastTime;
-	float intervalMilliseconds;
 
 	bool isRunning = false;
+	time_point<system_clock> lastTime;
+	float intervalMilliseconds;
 
 public:
 	void Start();

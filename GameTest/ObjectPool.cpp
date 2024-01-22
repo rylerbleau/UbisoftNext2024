@@ -32,7 +32,7 @@ void ObjectPool::InstantiateRandom(Ref<Actor> owner)
 	float b				= 0.0f;	
 
 	MATH::Vec2 pos		= MATH::Vec2(FRAND_RANGE(rad, APP_VIRTUAL_WIDTH - rad), APP_VIRTUAL_HEIGHT + rad);
-	MATH::Vec2 acc		= MATH::Vec2(0.0f, FRAND_RANGE(-0.0001, -0.001));
+	MATH::Vec2 acc		= MATH::Vec2(0.0f, FRAND_RANGE(-0.0001, -0.0005));
 	MATH::Vec2 vel		= MATH::Vec2(FRAND_RANGE(-0.2f, 0.2f), 0.0f);
 
 

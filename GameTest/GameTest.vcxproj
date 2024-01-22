@@ -183,6 +183,7 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
+    <ClInclude Include="Collectible.h" />
     <ClInclude Include="PoolObject.h" />
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="CircleComponent.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="ProgressBar.h" />
+    <ClInclude Include="RectangleComponent.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="2DMath.h" />
     <ClInclude Include="stb_image\stb_image.h" />
@@ -208,6 +210,7 @@
     <ClCompile Include="App\SimpleController.cpp" />
     <ClCompile Include="App\SimpleSound.cpp" />
     <ClCompile Include="App\SimpleSprite.cpp" />
+    <ClCompile Include="Collectible.cpp" />
     <ClCompile Include="PoolObject.cpp" />
     <ClCompile Include="ObjectPool.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="ProgressBar.cpp" />
+    <ClCompile Include="RectangleComponent.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="stb_image\stb_image.cpp" />
     <ClCompile Include="stdafx.cpp">

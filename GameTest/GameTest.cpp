@@ -19,12 +19,14 @@
 #include "ProgressBar.h"
 #include <vector>
 #include "Timer.h"
+#include "Collectible.h"
+#include <stdlib.h>
 
 //------------------------------------------------------------------------
 
 #pragma region DATA
 
-std::vector<MATH::Circle> stars;
+Ref<Collectible> powerup;
 Ref<Actor> playerActor;
 ObjectPool bulletPool;
 ObjectPool actorPool;
@@ -36,16 +38,31 @@ bool playing = false;
 float maxHeat = 10.0f;
 float curHeat = 0.0f;
 float maxHP = 5.0f;
-float curHP = maxHP;
 bool shooting = false;
 bool released = true;
 
-std::string text1 = "                     Keyboard:                           Controller:";
-std::string text2 = " Move->            A/D                                Left Stick";
-std::string text3 = "Shoot->           Space                                    A";
-std::string text4 = "Start->                 E                                         X";
+float meteorTimeCheckpoint = 0.0f;
+float meteorTimeThreshold = 3.0f;
+
+float powerupTimeCheckpoint = 0.0f;
+float powerupTimeThreshold = 10.0f;
+
+// upgradable --------------------------//
+float heatGainRate = 3.0f;
+float curHP = maxHP;
+float projectileSize = 5.0f;
+// -------------------------
+
+float maxProjectileSize = 15.0f;
+
+std::string text1 = "Best Time:";
+std::string text2 = "                     Keyboard:                           Controller:";
+std::string text3 = " Move->            A/D                                Left Stick";
+std::string text4 = "Shoot->           Space                                    A";
+std::string text5 = "Start->                 E                                         X";
 
 PlayerController* playerController;
+int bestTime = 0;
 
 
 #pragma endregion
@@ -59,10 +76,11 @@ PlayerController* playerController;
 void Init()
 {
 	playerActor = std::make_shared<Actor>(nullptr);
+	powerup = std::make_shared<Collectible>(nullptr);
 	Component* parent = dynamic_cast<Component*>(playerActor.get());
 	
 	playerActor->AddComponent<PhysicsComponent>(parent, MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f), MATH::Vec2(), MATH::Vec2(), 0.0f, 0.0f, 1.0f, true);
-	playerActor->AddComponent<CircleComponent>(parent, MATH::Vec2(0, 0), 10.0f, 20.0f, 0, 0, 0, false, true);
+	playerActor->AddComponent<CircleComponent>(parent, MATH::Vec2(0, 0), 50.0f, 20.0f, 0, 0, 0, true, true);
 
 	std::vector<Line> lines;
 	lines.push_back(Line{ MATH::Vec2(50.0f, -50.0f), MATH::Vec2(50.0f, 50.0f),1.0f, 0.0f, 0.0f });
@@ -72,6 +90,7 @@ void Init()
 
 	playerActor->AddComponent<LineComponent>(parent, lines, MATH::Vec2(0.0f, 0.0f));
 	
+
 
 	AmmoBar = new ProgressBar(MATH::Vec2(APP_VIRTUAL_WIDTH / 2, APP_VIRTUAL_HEIGHT - 10.0f), MATH::Vec2(APP_VIRTUAL_WIDTH, 20), 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f);
 	HealthBar = new ProgressBar(MATH::Vec2(400.0f, 100.0f), MATH::Vec2(100.0f, 20.0f), 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f);
@@ -84,23 +103,34 @@ void Init()
 //------------------------------------------------------------------------
 
 void PreGameRender() {
-	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 300, text1.c_str());
-	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 250, text2.c_str());
-	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 200, text3.c_str());
-	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 150, text4.c_str());
+	
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 350, (text1 + std::to_string(bestTime)).c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 300, text2.c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 250, text3.c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 200, text4.c_str());
+	App::Print(APP_VIRTUAL_WIDTH / 2 - 200, 150, text5.c_str());
 
 }
 //------------------------------------------------------------------------
 
 void ResetGame() {
+	if (timer->GetElapsedSeconds() > bestTime) {
+		bestTime = timer->GetElapsedSeconds();
+	}
 	timer->Stop();
 	playing = false;
 	actorPool.KillAll();
 	bulletPool.KillAll();
+	powerup->Kill();
 	playerActor->GetComponent<PhysicsComponent>()->pos = MATH::Vec2(APP_VIRTUAL_WIDTH / 2, 100.0f);
 	playerActor->GetComponent<PhysicsComponent>()->vel = MATH::Vec2();
 	curHeat = 0.0f;
 	curHP = maxHP;
+	heatGainRate = 3.0f;
+	projectileSize = 5.0f;
+
+	meteorTimeCheckpoint = 0.0f;
+	powerupTimeCheckpoint = 0.0f;
 }
 //------------------------------------------------------------------------
 
@@ -123,9 +153,17 @@ void HandleCollisions() {
 			continue;
 		}
 	}
-	COLLISIONS::BoundingBoxCircleCollision(playerActor->GetComponent<CircleComponent>(),
+
+	Ref<CircleComponent> pCircle = playerActor->GetComponent<CircleComponent>();
+	COLLISIONS::BoundingBoxCircleCollision(pCircle,
 		playerActor->GetComponent<PhysicsComponent>(), 0.0f, APP_VIRTUAL_WIDTH, 0.0f, APP_VIRTUAL_HEIGHT);
 
+	if (powerup->InUse()) {
+		if (COLLISIONS::CircleCircleCollisionTest(pCircle, powerup->GetComponent<CircleComponent>())) {
+			powerup->OnCollect(curHP, maxHP, heatGainRate, projectileSize, maxProjectileSize);
+			powerup->Kill();
+		}
+	}
 
 }
 
@@ -156,10 +194,15 @@ void Update(float deltaTime)
 	}
 
 
-	float t = timer->GetTimeInterval();
-	if (t >= interval) {
+	float t = timer->GetElapsedSeconds();
+	if(t - meteorTimeCheckpoint >= meteorTimeThreshold){
 		actorPool.InstantiateRandom(nullptr);
-		timer->ResetTimeInterval();
+		meteorTimeCheckpoint = t;
+	}
+	if (t - powerupTimeCheckpoint >= powerupTimeThreshold) {
+
+		powerup->Init(static_cast<PROJECTILE_TYPE>(FRAND_RANGE(1, 3.999)));
+		powerupTimeCheckpoint = t;
 	}
 	
 	
@@ -174,9 +217,12 @@ void Update(float deltaTime)
 	if (App::GetController().CheckButton(XINPUT_GAMEPAD_A, true) || CheckShooting())
 	{
 		if (curHeat < maxHeat) {
-			curHeat += 2.0f;
-			bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, 20.0f, 1.0f, 0,1,0, false, true);
+			curHeat += heatGainRate;
+			bulletPool.Instantiate(body->pos, MATH::Vec2(0.0f, 0.5f), MATH::Vec2(), playerActor, 2.0f, projectileSize, 1.0f, 0,1,0, false, true);
 		}
+	}
+	if (App::GetController().CheckButton(XINPUT_GAMEPAD_Y, true)) {
+		powerup->Init(static_cast<PROJECTILE_TYPE>(rand() % 3 + 1));
 	}
 	
 	
@@ -202,6 +248,7 @@ void Update(float deltaTime)
 
 	bulletPool.UpdatePool(deltaTime);
 	actorPool.UpdatePool(deltaTime);
+	powerup->Update(deltaTime);
 
 	// UI --------------------------------------------------------------------------------//
 
@@ -236,6 +283,7 @@ void Render()
 	
 	bulletPool.RenderObjects();
 	actorPool.RenderObjects();
+	powerup->Render();
 
 	playerActor->GetComponent<LineComponent>()->Render();
 	AmmoBar->Render();
